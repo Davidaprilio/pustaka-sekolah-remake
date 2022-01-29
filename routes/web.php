@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\PustakaController;
+use App\Http\Livewire as Wire;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -18,9 +19,9 @@ Route::get('/', function () {
     return view('welcome');
 });
 
-Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
-    return view('dashboard');
-})->name('dashboard');
+Route::middleware(['auth:sanctum', 'verified'])->group(function () {
+    Route::get('dashboard', Wire\Book\Show::class)->name('dashboard');
+});
 
 Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
 Route::get('reading/book/action/{book}', [PustakaController::class, 'baca']);
