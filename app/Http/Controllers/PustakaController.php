@@ -6,6 +6,8 @@ use App\Models\Book;
 use App\Models\EtalaseBook;
 use App\Models\EtalaseGroup;
 use App\Models\PivotEtalaseBook;
+use App\Models\ReadSession;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 use Illuminate\Support\Arr;
 
@@ -64,12 +66,31 @@ class PustakaController extends Controller
     }
 
 
-    public function baca(Request $request, $book)
+    public function baca(Request $request, Book $book)
     {
+        $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
+        if (!$read_sesi) {
+            $read_sesi = ReadSession::create([
+                'user_id' => $request->user()->id,
+                'book_id' => $book->id,
+                'long_read' => Carbon::now(),
+                'last_page' => 1
+            ]);
+        }
         return view('pustaka.book-reader-legacy', [
-            'book' => 'ocsiufcnhsehfu',
+            'book' => $book,
             'user' => $request->user()
         ]);
+    }
+
+    public function refreshSessionReading(Request $request, Book $book)
+    {
+        $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
+        // if ($request->page != $read_sesi->last_page) {
+        $read_sesi->update([
+            'last_page' => $request->num
+        ]);
+        // }
     }
 
     public function page(Book $book)

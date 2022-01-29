@@ -181,7 +181,7 @@
                           </div>
                           <div class="d-flex justify-content-start flex-column">
                             <a href="#" class="text-dark fw-bolder text-hover-primary fs-6">{{ $book->title }}</a>
-                            <span class="text-muted fw-bold text-muted d-block fs-7">{{ $book->path ?? '-'
+                            <span class="text-muted fw-bold text-muted d-block fs-7">{{ $book->slug ?? '-'
                               }}</span>
                           </div>
                         </div>

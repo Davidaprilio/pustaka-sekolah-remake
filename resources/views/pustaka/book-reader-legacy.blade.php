@@ -473,7 +473,7 @@
 
     function countTime() {
       console.log('update');
-      fetch(`{{ url('/reading/book/action') }}/{{ $book }}/${PDFViewerApplication.page}`)
+      fetch(`{{ url('/reading/book/action') }}/{{ $book->slug }}/${PDFViewerApplication.page}`)
       if (liveCicle >= 3) {
         liveCicle = 1
         console.log((tim++) + '0 menit');
