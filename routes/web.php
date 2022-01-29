@@ -21,6 +21,8 @@ Route::get('/', function () {
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     Route::get('dashboard', Wire\Book\Show::class)->name('dashboard');
+
+    Route::get('books', Wire\Book\Show::class)->name('book.index');
 });
 
 Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
