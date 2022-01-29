@@ -123,9 +123,8 @@
     <!--end::Page-->
   </div>
   <!--end::Root-->
-  <!--begin::Scrolltop-->
+
   <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-    <!--begin::Svg Icon | path: icons/duotune/arrows/arr066.svg-->
     <span class="svg-icon">
       <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
         <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
@@ -134,29 +133,18 @@
           fill="black" />
       </svg>
     </span>
-    <!--end::Svg Icon-->
   </div>
-  <!--end::Scrolltop-->
-  <!--end::Main-->
+
   <script>
     var hostUrl = "{{ asset('assets') }}";
   </script>
-  <!--begin::Javascript-->
-  <!--begin::Global Javascript Bundle(used by all pages)-->
   <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
   <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-  <!--end::Global Javascript Bundle-->
-  <!--begin::Page Vendors Javascript(used by this page)-->
-  <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script>
-  <!--end::Page Vendors Javascript-->
-  <!--begin::Page Custom Javascript(used by this page)-->
+  {{-- <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script> --}}
   <script src="{{ asset('assets/js/custom/widgets.js') }}"></script>
-  <script src="{{ asset('assets/js/custom/apps/chat/chat.js') }}"></script>
+  {{-- <script src="{{ asset('assets/js/custom/apps/chat/chat.js') }}"></script> --}}
   <script src="{{ asset('assets/js/custom/modals/create-app.js') }}"></script>
   <script src="{{ asset('assets/js/custom/modals/upgrade-plan.js') }}"></script>
-  <!--end::Page Custom Javascript-->
-  <!--end::Javascript-->
 </body>
-<!--end::Body-->
 
 </html>
