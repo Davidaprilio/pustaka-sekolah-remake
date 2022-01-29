@@ -15,8 +15,8 @@
 </head>
 
 <body tabindex="1" data-worker="{{ asset('pdfjs/build/pdf.worker.js') }}"
-  data-sandbox="{{ asset('pdfjs/build/pdf.sandbox.js') }}" data-images="{{ asset('pdfjs/css/images') }}"
-  data-fonts="{{ asset('pdfjs/standard_fonts') }}" data-cmaps="{{ asset('pdfjs/cmaps') }}"
+  data-sandbox="{{ asset('pdfjs/build/pdf.sandbox.js') }}" data-images="{{ asset('pdfjs/css/images') }}/"
+  data-fonts="{{ asset('pdfjs/standard_fonts') }}/" data-cmaps="{{ asset('pdfjs/cmaps') }}/"
   data-file="{{ asset('tes-18.pdf') }}">
   <script src="{{ asset('pdfjs/js/viewer.js') }}"></script>
   <div id="outerContainer">
@@ -461,6 +461,42 @@
   </div>
   <!-- outerContainer -->
   <div id="printContainer"></div>
+
+  <script>
+    let stateAction = true;
+    var intervalOne;
+    let tim = 0;
+    let liveCicle = 1;
+    function startCount() {
+      intervalOne = setInterval(countTime, 1000 * 10);
+    }
+
+    function countTime() {
+      console.log('update');
+      fetch(`{{ url('/reading/book/action') }}/{{ $book }}/${PDFViewerApplication.page}`)
+      if (liveCicle >= 3) {
+        liveCicle = 1
+        console.log((tim++) + '0 menit');
+        if (!stateAction) {
+          clearInterval(intervalOne)
+          var ask = confirm('Hai apakah kamu masih membaca buku ini klik "Oke jika masih membaca"');
+          (ask) ? startCount() : window.location.href = "{{ url('/') }}";
+        }
+        stateAction = false;
+      } else {
+        liveCicle++
+      }
+    }
+    startCount()
+    function refreshState() {
+      console.log('refersh');
+      stateAction = true
+    }
+    document.body.addEventListener('touch', refreshState);
+    document.body.addEventListener('click', refreshState);
+    document.body.addEventListener('mouseover', refreshState);
+    document.body.addEventListener('scroll', refreshState);
+  </script>
 </body>
 
 </html>

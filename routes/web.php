@@ -23,3 +23,4 @@ Route::middleware(['auth:sanctum', 'verified'])->get('/dashboard', function () {
 })->name('dashboard');
 
 Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
+Route::get('reading/book/action/{book}', [PustakaController::class, 'baca']);

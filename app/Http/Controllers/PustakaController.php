@@ -67,7 +67,7 @@ class PustakaController extends Controller
     public function baca(Request $request, $book)
     {
         return view('pustaka.book-reader-legacy', [
-            'book' => $book,
+            'book' => 'ocsiufcnhsehfu',
             'user' => $request->user()
         ]);
     }
