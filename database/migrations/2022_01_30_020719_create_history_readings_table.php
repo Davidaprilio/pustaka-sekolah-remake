@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateReadSessionsTable extends Migration
+class CreateHistoryReadingsTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,15 +13,11 @@ class CreateReadSessionsTable extends Migration
      */
     public function up()
     {
-        Schema::create('read_sessions', function (Blueprint $table) {
+        Schema::create('history_readings', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('book_id');
-            $table->foreignId('task_id')->nullable();
-            $table->jsonb('history');
-            $table->integer('last_page');
-            $table->boolean('on_reading')->default(0);
-            $table->integer('long_read'); // minute
+            $table->integer('long_time');
             $table->timestamps();
         });
     }
@@ -33,6 +29,6 @@ class CreateReadSessionsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('read_sessions');
+        Schema::dropIfExists('history_readings');
     }
 }
