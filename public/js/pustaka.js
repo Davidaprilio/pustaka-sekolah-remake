@@ -173,6 +173,7 @@ function updateURL(url, data) {
 // Beres
 function loading(page) {
     var template;
+    return false;
     if (page === 'detail') {
         template = skeleteonPageDetail.content.cloneNode(true);
         containerBookList.innerHTML = ''

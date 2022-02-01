@@ -23,6 +23,7 @@
   @livewireStyles
   @livewireScripts
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+  @stack('head')
 </head>
 
 <body id="kt_body"
@@ -139,6 +140,7 @@
   {{-- <script src="{{ asset('assets/js/custom/apps/chat/chat.js') }}"></script> --}}
   <script src="{{ asset('assets/js/custom/modals/create-app.js') }}"></script>
   <script src="{{ asset('assets/js/custom/modals/upgrade-plan.js') }}"></script>
+  @stack('script')
 </body>
 
 </html>

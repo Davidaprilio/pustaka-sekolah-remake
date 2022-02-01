@@ -50,7 +50,7 @@ class PustakaController extends Controller
         }
         if ($etalase_book) $etalase_book->load('books');
 
-        return view('pustaka.list-book', [
+        return view('pustaka.book-list', [
             'etalase_book' => $etalase_book
         ]);
     }

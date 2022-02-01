@@ -186,7 +186,7 @@ class Show extends Component
         //     }
         // );
         return view('livewire.book.show', [
-            'books' => Book::orderBy('created_at', 'DESC')->get()
+            'books' => Book::orderBy('created_at', 'DESC')->where('publish', 1)->get()
         ]);
     }
 }
