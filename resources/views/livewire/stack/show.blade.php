@@ -1,3 +1,20 @@
+@push('head')
+<style>
+  .btn-delete-stack {
+    top: 20%;
+    right: -20px;
+    transition: .15s ease-in;
+  }
+
+  .input-stack {
+    overflow: hidden;
+  }
+
+  .input-stack:hover .btn-delete-stack {
+    right: 5px;
+  }
+</style>
+@endpush
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
   <div class="toolbar" id="kt_toolbar">
     <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
