@@ -10,6 +10,7 @@
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
         "itsgoingd/clockwork": "^5.1",
+        "jantinnerezo/livewire-alert": "^2.2",
         "laravel/framework": "^8.75",
         "laravel/jetstream": "^2.6",
         "laravel/sanctum": "^2.11",
