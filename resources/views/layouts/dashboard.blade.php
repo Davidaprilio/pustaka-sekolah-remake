@@ -23,6 +23,8 @@
   @livewireStyles
   @livewireScripts
   <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
+  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+  <x-livewire-alert::scripts />
   @stack('head')
 </head>
 
