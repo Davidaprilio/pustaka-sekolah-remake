@@ -29,7 +29,7 @@
               <form wire:submit.prevent="addStack">
                 <div class="mb-5">
                   <label class="form-label fw-bold">Kategori:</label>
-                  <select class="form-select form-select-solid" wire:model.lazy="create_stack.group_id">
+                  <select class="form-select form-select-solid" wire:model.defer="create_stack.group_id">
                     @foreach ($menu_etalase as $etalase)
                     <option @if ($loop->iteration) selected @endif value="{{ $etalase->id }}">{{ $etalase->name }}
                     </option>
@@ -38,7 +38,7 @@
                 </div>
                 <div class="mb-10">
                   <label class="form-label fw-bold">Nama Rak:</label>
-                  <input class="form-control" wire:model.lazy="create_stack.name" type="text" />
+                  <input class="form-control" wire:model.defer="create_stack.name" type="text" />
                 </div>
                 <div class="d-flex justify-content-end">
                   <button type="reset" class="btn btn-sm btn-light btn-active-light-primary me-2"
@@ -51,6 +51,7 @@
           </div>
           <!--end::Form-->
         </div>
+        {{-- + Etalase --}}
         <div class="me-4">
           <a href="#" class="btn btn-sm btn-flex btn-light btn-active-primary fw-bolder" data-kt-menu-trigger="click"
             data-kt-menu-placement="bottom-end">

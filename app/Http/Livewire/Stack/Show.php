@@ -6,11 +6,13 @@ use App\Models\EtalaseBook;
 use App\Models\EtalaseGroup;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Str;
-use Illuminate\Support\Arr;
 use Livewire\Component;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class Show extends Component
 {
+    use LivewireAlert;
+
     protected $listeners = [
         'refresh-base' => '$refresh'
     ];
@@ -29,6 +31,16 @@ class Show extends Component
             'slug' => Str::slug($this->create_stack['name']) . rand(100, 9999),
             'user_id' => Auth::user()->id,
         ]);
+        if ($new_stack) {
+            $this->emit('refresh-etalase'); //event refresh child etalase card
+            $this->alert('success', 'Rak baru berhasil dibuat');
+        } else {
+            $this->alert('error', 'Opps, gagal membuat rak baru');
+        }
+        $this->create_stack = [
+            'name' => null,
+            'group_id' => null
+        ];
     }
 
     /**
@@ -36,11 +48,17 @@ class Show extends Component
      */
     public function addEtalase()
     {
-        $data = EtalaseGroup::create([
+        $created = EtalaseGroup::create([
             'user_id' => Auth::id(),
             'name' => $this->etalase,
             'slug' => Str::slug($this->etalase) . rand(10, 9999),
         ]);
+        if ($created) {
+            $this->alert('success', 'Etalase Baru berhasil dibuat');
+        } else {
+            $this->alert('error', 'Opps, gagal membuat etalase');
+        }
+        $this->etalase = null;
     }
 
     public function render()

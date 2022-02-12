@@ -11,7 +11,8 @@ class CardEtalase extends Component
     use LivewireAlert;
 
     protected $listeners = [
-        'confirmed'
+        'confirmed',
+        'refresh-etalase' => '$refresh'
     ];
 
     public EtalaseGroup $etalaseGroup;
