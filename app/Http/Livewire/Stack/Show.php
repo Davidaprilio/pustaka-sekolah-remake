@@ -15,46 +15,11 @@ class Show extends Component
         'refresh-base' => '$refresh'
     ];
 
-    public function test()
-    {
-        dd('tested');
-    }
-
     public $etalase;
-    public $stack = [];
     public $create_stack = [
         'name' => null,
         'group_id' => null
     ];
-    public $etalase_data;
-
-    /**
-     * Menyiapkan Data RakBuku Untuk Dirender Oleh jKanban
-     */
-    public function mount()
-    {
-        $stack = EtalaseGroup::all();
-        $this->create_stack['group_id'] = $stack[0]->id;
-        $this->etalase_data = $stack;
-        $stack->load('etalase');
-        $menu_etalase = [];
-        foreach ($stack as $item) {
-            $items = [];
-            foreach ($item->etalase as $s) {
-                array_push($items, [
-                    'id' => $s->id,
-                    'title' => $s->name
-                ]);
-            }
-            array_push($menu_etalase, [
-                'id' => $item->id,
-                'title' => $item->name,
-                'item' => $items
-            ]);
-        }
-        $this->stack = $menu_etalase;
-    }
-
 
     public function addStack()
     {

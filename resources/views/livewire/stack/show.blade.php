@@ -1,8 +1,3 @@
-{{-- @push('head')
-<link href="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.css') }}" rel="stylesheet" type="text/css" />
-<script src="{{ asset('assets/plugins/custom/jkanban/jkanban.bundle.js') }}"></script>
-@endpush --}}
-
 <div class="content d-flex flex-column flex-column-fluid" id="kt_content">
   <div class="toolbar" id="kt_toolbar">
     <div id="kt_toolbar_container" class="container-fluid d-flex flex-stack">
@@ -35,7 +30,7 @@
                 <div class="mb-5">
                   <label class="form-label fw-bold">Kategori:</label>
                   <select class="form-select form-select-solid" wire:model.lazy="create_stack.group_id">
-                    @foreach ($etalase_data as $etalase)
+                    @foreach ($menu_etalase as $etalase)
                     <option @if ($loop->iteration) selected @endif value="{{ $etalase->id }}">{{ $etalase->name }}
                     </option>
                     @endforeach
@@ -87,7 +82,7 @@
       </div>
     </div>
   </div>
-  <div class="post d-flex flex-column-fluid" id="kt_post" wire:ignore>
+  <div class="post d-flex flex-column-fluid" id="kt_post">
     <div id="kt_content_container" class="container-xxl">
       <div class="row gy-5 g-xl-8">
         <div class="col-12">
@@ -105,24 +100,3 @@
     </div>
   </div>
 </div>
-
-@push('script')
-<script>
-  // var kanban = new jKanban({
-  //     element: '#kt_docs_jkanban_basic',
-  //     gutter: '0',
-  //     widthBoard: '250px',
-  //     boards: [],
-  //   });
-  // document.addEventListener('livewire:load', function () {
-  //   kanban.addBoards(@this.stack)
-  //   @this.on('created-etalase', (data) => {
-  //     kanban.addBoards(data)
-  //   })
-  //   @this.on('created-stack', (res) => {
-  //     kanban.addElement(res.board_id, res.data)
-  //   })
-    
-  // })
-</script>
-@endpush
