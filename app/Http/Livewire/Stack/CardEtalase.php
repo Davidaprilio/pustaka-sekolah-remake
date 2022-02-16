@@ -19,7 +19,8 @@ class CardEtalase extends Component
 
     public function delete()
     {
-        $this->alert('warning', 'Yakin ingin menghapus data ini?', [
+        $this->alert('warning', 'Yakin ingin menghapus etalase ini?', [
+            'text' => "ini juga akan menghapus semua rak yang ada di etalse {$this->etalaseGroup->name}",
             'toast' => false,
             'position' => 'center',
             'showConfirmButton' => true,
@@ -36,7 +37,16 @@ class CardEtalase extends Component
      */
     public function confirmed()
     {
-        $deleted = $this->etalaseGroup->delete();
+        try {
+            $this->etalaseGroup->etalase()->delete();
+        } catch (\Throwable $th) {
+            $this->alert('error', 'Gagal menghapus rak buku');
+        }
+        try {
+            $deleted = $this->etalaseGroup->delete();
+        } catch (\Throwable $th) {
+            $this->alert('error', 'Gagal menghapus etalase');
+        }
         if ($deleted) {
             $this->emit('refresh-base');
             $this->alert('success', 'Data berhasil dihapus');
