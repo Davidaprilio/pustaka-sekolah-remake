@@ -19,7 +19,7 @@ class CreateBooksTable extends Migration
             $table->string('title')->nullable();
             $table->string('path');
             $table->jsonb('files');
-            $table->string('cover');
+            $table->string('cover')->nullable();
             $table->string('slug');
             $table->string('author')->nullable();
             $table->string('writer')->nullable();

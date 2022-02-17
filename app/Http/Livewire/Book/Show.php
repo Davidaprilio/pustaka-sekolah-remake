@@ -10,12 +10,19 @@ use Illuminate\Support\Arr;
 use Livewire\Component;
 use Livewire\WithFileUploads;
 use setasign\Fpdi\Fpdi;
+use Jantinnerezo\LivewireAlert\LivewireAlert;
 
 class Show extends Component
 {
+    use LivewireAlert;
     use WithFileUploads;
 
+    protected $listeners = [
+        'refresh' => '$refresh'
+    ];
+
     public $book;
+    public $bookDelete;
     private $name_book;
 
     /**
@@ -28,23 +35,20 @@ class Show extends Component
         ]);
         $original_name = $this->book->getClientOriginalName();
         $path = $this->book->store('public/book');
-        // $data = self::split_pdf($path);
-        $pathFile = storage_path("app/{$path}");
-        $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile($pathFile);
+        $data = self::split_pdf($path);
         $this->book = null;
         $book = Book::create([
             'user_id' => Auth::user()->id,
             'title' => str_replace('.pdf', '', $original_name),
-            'path' => $path,
-            'files' => $data['files'] ?? ['d' => 2],
-            'pages' => $data['pages'] ?? $pageCount,
+            'path' => $data['path'],
+            'files' => $data['files'],
+            'pages' => $data['pages'],
             'cover' => '-',
             'slug' => Str::slug($original_name) . Str::random(4),
             'download' => 0,
             'read' => 0
         ]);
-        // Storage::deleteDirectory("livewire-tmp");
+        Storage::deleteDirectory("livewire-tmp");
     }
 
     /**
@@ -165,12 +169,6 @@ class Show extends Component
         return $data;
     }
 
-    public function delete(Book $book)
-    {
-        Storage::deleteDirectory("public/book/{$book->path}");
-        $book->delete();
-    }
-
     public function render()
     {
         // $arrayOfObjects = [
@@ -186,7 +184,7 @@ class Show extends Component
         //     }
         // );
         return view('livewire.book.show', [
-            'books' => Book::orderBy('created_at', 'DESC')->where('publish', 1)->get()
+            'books' => Book::orderBy('created_at', 'DESC')->get()
         ]);
     }
 }
