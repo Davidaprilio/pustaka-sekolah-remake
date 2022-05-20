@@ -5,18 +5,18 @@
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
   <title>Petugas Perpustakaan</title>
-  <link rel="stylesheet" href="{{ asset('/bootstrap/css/bootstrap.min.css') }}">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-0evHe/X+R7YkIZDRvuzKMRqM+OrBnVFBL6DOitfPri4tjfHxaWutUpFmBp4vmVor" crossorigin="anonymous">
   <link rel="stylesheet" href="{{ asset('/fonts/font-awesome.min.css') }}">
   <link rel="stylesheet" href="{{ asset('/admin/css/styles.min.css') }}">
   <link rel="stylesheet" href="{{ asset('css/pustaka.css') }}">
-  <script src="{{ asset('/js/jquery-3.5.1.min.js') }}"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.0/js/bootstrap.bundle.min.js"></script>
-  <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
-    integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo" crossorigin="anonymous">
-  </script>
-  <script src="{{ asset('/bootstrap/js/bootstrap.min.js') }}"></script>
+  <script src='https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js' integrity='sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ==' crossorigin='anonymous'></script>
   <style type="text/css">
     @import url('https://fonts.googleapis.com/css2?family=Raleway:wght@200;300;400&display=swap');
+    @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@100;300;400&display=swap');
+
+    * {
+      font-family: 'Roboto', sans-serif;
+    }
 
     .raleway {
       font-family: 'Raleway', sans-serif;
@@ -25,38 +25,73 @@
     .toast {
       width: 100vh;
     }
+
+    .scroll-bar-custom::-webkit-scrollbar {
+        width: 1em;
+    }
+    
+    .scroll-bar-custom::-webkit-scrollbar-track {
+        -webkit-box-shadow: inset 0 0 6px rgba(0,0,0,0.3);
+    }
+    
+    .scroll-bar-custom::-webkit-scrollbar-thumb {
+      background-color: darkgrey;
+      outline: 1px solid slategrey;
+    }
   </style>
 </head>
 
 <body class="sb-nav-fixed bg-light">
   <nav class="navbar navbar-expand shadow-sm bg-navG sticky-top sb-topnav py-0 border-bottom border-warning">
-    <div class="container-fluid">
-      <button class="btn btn-link btn-sm ml-2 text-light" id="sidebarToggle" type="button">
-        <i class="fa fa-bars"></i>
-      </button>
-      <a class="navbar-brand d-flex" href="/Administrator">
-        <img src="/img/logo/pustakaM.png">
-        <div class="brand-txt">
-          <h4 class="mb-0">Pustaka</h4>
-          <small class="d-block">Perpustakaan Sekolah</small>
+    <div class="container-xxl w-100">
+      <div class="row w-100 align-content-center justify-content-between">
+        <div class="col-4 d-flex d-lg-none align-items-center">
+          <button class="btn btn-link btn-sm ms-2 text-light" type="button" data-bs-toggle="offcanvas" data-bs-target="#sideBar-menu" aria-controls="sideBar-menu">
+            <i class="fa fa-bars"></i>
+          </button>
         </div>
-      </a>
-      <div class="">
-        <a href="{{ route('login') }}" class="btn btn-warning btn-sm">Login</a>
+  
+        <div class="col-4">
+          <a class="navbar-brand d-flex justify-content-center align-items-center" href="/Administrator">
+            <img src="/img/logo/pustakaM.png">
+            <div class="brand-txt mb-2">
+              <h4 class="mb-0">Pustaka</h4>
+              <small class="d-block">Perpustakaan Sekolah</small>
+            </div>
+          </a>
+        </div>
+  
+        <div class="col-4 d-none d-lg-flex align-items-center">
+          <div class="input-group my-auto">
+            <input type="text" class="form-control" style="border-right-color: transparent;" placeholder="Cari Buku ..."
+              aria-describedby="btnSearch" id="search-Book">
+            <button class="btn btn-light border" type="button" id="btnSearch">
+              <i class="fa fa-search text-muted"></i>
+            </button>
+          </div>
+        </div>
+  
+        <div class="col-4 text-end d-flex align-items-center justify-content-end">
+          <a href="{{ route('login') }}" class="btn btn-warning btn-sm">Login</a>
+        </div>
       </div>
     </div>
   </nav>
 
-  <div id="layoutSidenav">
-    <div id="layoutSidenav_nav">
-      <div id="sidenavAccordion" class="sb-sidenav accordion">
-        <div class="sb-sidenav-menu scrollBar">
+  <div class="container-xxl d-flex mt-5">
+    <div class="flex-shrink-0">
+      <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="sideBar-menu" aria-labelledby="sideBarLabel" style="width: 288px">
+        <div class="offcanvas-header">
+          <h5 class="offcanvas-title" id="sideBarLabel">Responsive offcanvas</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sideBar-menu" aria-label="Close"></button>
+        </div>
+        <div class="offcanvas-body">
           @include('layouts.pustaka-menu')
         </div>
       </div>
     </div>
-    <div id="layoutSidenav_content">
-      <main class="bg-light container mt-4" style="overflow-x: hidden;" id="book-list">
+    <div class="flex-grow-1">
+      <main class="bg-light container-xxl mt-4" style="overflow-x: hidden;" id="book-list">
         @yield('main')
       </main>
     </div>
@@ -73,6 +108,8 @@
     </div>
   </div>
 
+
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.0-beta1/dist/js/bootstrap.bundle.min.js" integrity="sha384-pprn3073KE6tl6bjs2QrFaJGz5/SUsLqktiwsUTF55Jfv3qYSDhgCecCxMW52nD2" crossorigin="anonymous"></script>
   <script>
     const bashurl = "{{ url('/') }}";
   </script>

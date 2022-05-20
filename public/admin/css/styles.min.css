@@ -220,10 +220,10 @@ a.nav-link {
     padding-left: 18px;
     overflow-x: hidden;
 }
-.sb-nav-fixed #layoutSidenav #layoutSidenav_content {
+/* .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
     padding-left: 225px;
     top: 56px;
-}
+} */
 .img-error {
     max-width: 20rem;
 }
@@ -468,6 +468,11 @@ a.nav-link {
     border: 1px solid #eee;
 }
 
+.scrollBar {
+    scrollbar-color: #fedf72 transparent;
+    scrollbar-width: thin;
+    scrollbar-height: thin;
+}
 .scrollBar::-webkit-scrollbar {
     width: 7px;
 }

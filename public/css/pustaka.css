@@ -104,17 +104,17 @@ ol.breadcrumb {
     background: #989078;
     border-radius: 25px;
 }
-.conten-scroll .card,
+/* .conten-scroll .card,
 #buku .row .card {
     width: 141px;
-}
-.conten-scroll .card img,
+} */
+/* .conten-scroll .card img,
 #buku .row .card img {
     width: 140px;
     height: 195px;
     margin: 0 auto;
     padding: 0;
-}
+} */
 .conten-scroll .card div.p-2 {
     line-height: 15px;
 }

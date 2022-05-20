@@ -304,3 +304,34 @@ window.onpopstate = function (event) {
         return false
     }
 };
+
+
+function cardBookListHorizonScrol() {
+    return strtoHTML(/*html*/`
+    <div class="bg-white px-3 pt-3 pb-1 rounded-3 shadow-sm border">
+        <div class="conten-scroll rounded-3">
+        </div>
+    </div>`);
+}
+
+function cardBook(title, cover, writer) {
+    return strtoHTML(/*html*/`
+    <div class="card mx-auto d-inline-block overflow-hidden me-2">
+        <img src="${cover ?? 'https://via.placeholder.com/175x250'}" width="175px" alt="cover_book" class="img-fluid">
+        <div class="px-1 py-2">
+        <a href="#" class="text-dark my-0 py-0 buku_title text-decoration-none" title="Buku" data-book-slug="buku"
+            data-stack-slug="buku">${title}</a>
+        <p class="d-block my-0 authorBook">
+            <small class="text-muted">${writer}</small>
+        </p>
+        </div>
+    </div>`);
+}
+
+
+
+function strtoHTML(strHTML) {
+    const div = document.createElement('div');
+    div.innerHTML = strHTML.trim();
+    return div.firstChild;
+}
