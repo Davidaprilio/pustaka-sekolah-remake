@@ -309,7 +309,7 @@ window.onpopstate = function (event) {
 function cardBookListHorizonScrol() {
     return strtoHTML(/*html*/`
     <div class="bg-white px-3 pt-3 pb-1 rounded-3 shadow-sm border">
-        <div class="conten-scroll rounded-3">
+        <div class="conten-scroll rounded-3 scrollBar">
         </div>
     </div>`);
 }
