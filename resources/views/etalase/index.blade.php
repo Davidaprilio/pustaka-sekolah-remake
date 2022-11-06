@@ -5,7 +5,19 @@
     <div class="col-12 col-xl-7 mb-3">
         <div class="card">
             <div class="card-body">
-                <x-alert.flash name="success" type="success" />
+                <x-alert.flash name="cat_success" type="success" />
+                <x-form :action="route('etalase.item')" method="POST" id="form-kategori" style="display: none" class="pb-2 mb-3 border-bottom">
+                    <input type="hidden" name="item_id">
+                    <div class="row">
+                        <x-form.input col="col-6" label="Nama" name="name_cat" />
+                        <x-form.select col="col-6" label="Group" name="group_id" :options="$groups->pluck('name', 'id')" />
+                        <div class="col"></div>
+                        <div class="col-6 mt-2 text-end">
+                            <button id="btn-close-form-kategori" type="button" class="btn btn-sm btn-secondary">cancel</button>
+                            <button class="btn btn-sm btn-primary">save</button>
+                        </div>
+                    </div>
+                </x-form>
                 <div class="table-responsive">
                     <table class="table table-sm table-striped table-hover" id="table-kategori">
                         <thead class="table-light">
@@ -14,7 +26,11 @@
                                 <td style="min-width: 120px">Nama Kategori</td>
                                 <td style="min-width: 100px">Group</td>
                                 <td style="min-width: 120px">Jumlah Buku</td>
-                                <td class="text-center">Aksi</td>
+                                <td class="text-end">
+                                    <button class="btn btn-xs btn-primary rounded-0" id="btn-add-kategori">
+                                        + Baru
+                                    </button>
+                                </td>
                             </tr>
                         </thead>
                         <tbody>
@@ -25,16 +41,21 @@
                                     <td>{{ $e->group->name ?? '-' }}</td>
                                     <td>{{ $e->books_count ?? 0 }} buku</td>
                                     <td>
-                                        <div class="btn-group float-end">
-                                            <button class="btn btn-sm btn-warning">
+                                        <div class="btn-group float-end" data-id="{{ $e->id }}" data-name="{{ $e->name }}" data-gid="{{ $e->group->id }}">
+                                            <button class="btn btn-sm btn-warning btn-edit">
                                                 <i class="fa fs-6 fa-pencil"></i>
                                             </button>
                                             @if ($e->books_count > 0)
-                                                <button title="Tidak dapat menghapus kategori ini karena terdapat {{ $e->books_count }} buku didalamnya" class="btn btn-sm btn-danger">
+                                            @php
+                                                $title = "Tidak dapat menghapus kategori ini karena terdapat {$e->books_count} buku didalamnya";
+                                            @endphp
+                                                <button title="{{ $title }}" onclick="alert('{{ $title }}')" class="btn btn-sm btn-danger">
                                                     <i class="fa fs-6 fa-trash"></i>
                                                 </button>
                                             @else
-                                                <x-link class="btn btn-sm btn-danger" :href="url($e->slug)" method="DELETE">
+                                                <x-link class="btn btn-sm btn-danger" classform="form-item-delete" :href="route('etalase.item.delete', [
+                                                    'etalaseBook' => $e->id,
+                                                ])" method="DELETE">
                                                     <i class="fa fs-6 fa-trash"></i>
                                                 </x-link>
                                             @endif
@@ -68,7 +89,7 @@
                 </x-form>
             </div>
             <div class="table-responsive-md">
-                <table class="table mb-0 table-sm table-striped table-hover" id="table-kategori">
+                <table class="table mb-0 table-sm table-striped table-hover" id="table-groups">
                     <thead class="table-light">
                         <tr>
                             <td>No</td>
@@ -89,26 +110,6 @@
         </div>
     </div>
 </div>
-
-  <!-- Modal -->
-  <div class="modal fade" id="editModal" tabindex="-1" aria-labelledby="editModalLabel" aria-hidden="true">
-    <div class="modal-dialog">
-      <div class="modal-content">
-        <div class="modal-header">
-          <h1 class="modal-title fs-5" id="editModalLabel">Creat</h1>
-          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-        </div>
-        <div class="modal-body">
-          ...
-        </div>
-        <div class="modal-footer">
-          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-          <button type="button" class="btn btn-primary">Save changes</button>
-        </div>
-      </div>
-    </div>
-  </div>
-  
 @endsection
 
 @section('js')
@@ -135,16 +136,18 @@
 
             await submitForm('#form-groups').then(html => {
                 closeFormGroup()
-                $('#table-kategori tbody').html(html);
+                $('#table-groups tbody').html(html);
             }).catch(err => {
                 const alertEl = makeAlertFromError(err)
                 if (alertEl) {
                     $('#alert-groups').append(alertEl);
                 }
-            });
+            })
 
             btn.attr('disabled', false);
             btn.html('save');
+
+            makeSelect()
         })
 
         function closeFormGroup() {
@@ -155,19 +158,47 @@
 
         $('#btn-add-groups').on('click', function() {
             $('#form-groups').slideDown();
+            $('#form-groups').trigger('reset');
+            $('#group_id').val('');
+
+        })
+        $('#btn-add-kategori').on('click', function() {
+            $('#form-kategori').slideDown();
+            $('#form-kategori').trigger('reset');
+            $('#form-kategori input[name="item_id"]').val('');
         })
 
-        $('#table-kategori tbody').on('click', '.btn-edit', function() {
-            const button = $(this)
+        $('#table-groups tbody').on('click', '.btn-edit', function() {
+            const button = $(this)  
             const buttonGroup = button.parent();
             const dataID = buttonGroup.data('id');
             const nameGroup = buttonGroup.data('name');
+
             $('#group_id').val(dataID);
             $('#form-groups input[name="name"]').val(nameGroup);
             $('#form-groups').slideDown();
         })
 
-        $('#table-kategori tbody').on('submit', '.form-group-delete', function(e) {
+        $('#btn-close-form-kategori').on('click', function() {
+            $('#form-kategori').slideUp();
+            $('#form-kategori').trigger('reset');
+            $('#form-kategori input[name="item_id"]').val('');
+        })
+        
+        $('#table-kategori tbody').on('click', '.btn-edit', function() {
+            const button = $(this)
+            const buttonGroup = button.parent();
+            const dataID = buttonGroup.data('id');
+            const nameKategori = buttonGroup.data('name');
+            const idGroup = buttonGroup.data('gid');
+
+            $('#name_cat-input').val(nameKategori);
+            $('#group_id-select').val(idGroup);
+            $('#form-kategori input[name="item_id"]').val(dataID);
+            $('#form-kategori').slideDown();
+        })
+
+        $('#table-groups tbody').on('submit', '.form-group-delete', function(e) {
             e.preventDefault();
             const form = $(this);
             Swal.fire({
@@ -182,7 +213,7 @@
                 if (result.isConfirmed) {
 
                     submitForm(form).then(html => {
-                        $('#table-kategori tbody').html(html);
+                        $('#table-groups tbody').html(html);
                     }).catch(err => {
                         const alertEl = makeAlertFromError(err)
                         if (alertEl) {
@@ -192,10 +223,50 @@
                         }
                     }).finally((res) => {
                         closeFormGroup()
-                        console.log('finally', res, form)
+                        makeSelect()
                     })
                 }
             })
         })
+
+        $('#table-kategori tbody').on('submit', '.form-item-delete', function(e) {
+            const form = $(this);
+            if (!form.hasClass('confirmed')) {
+                e.preventDefault();
+
+                Swal.fire({
+                    title: 'Apakah anda yakin?',
+                    text: "Data yang dihapus secara permanen!",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#3085d6',
+                    cancelButtonColor: '#d33',
+                    confirmButtonText: 'Ya, hapus!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        form.addClass('confirmed');
+                        form.submit();
+                    }
+                })
+            }
+        })
+
+        $('#form-groups input[name="name"]').on('keyup', function(e) {
+            if (e.key === 'Escape') {
+                closeFormGroup()
+            }
+        })
+
+        function makeSelect() {
+            const groups = $('#table-groups tbody tr').map(function(idx, tr) {
+                const buttonGroup = $(this).find('.btn-group');
+                const dataID = buttonGroup.data('id');
+                const nameGroup = buttonGroup.data('name');
+                return `<option value="${dataID}">${nameGroup}</option>`
+            }).get().join('');
+            $('#group_id-select').html(groups);
+        }
+
+        
     </script>
 @endsection

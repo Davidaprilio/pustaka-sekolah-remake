@@ -38,6 +38,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
     Route::prefix('kategori')->name('etalase')->group(function () {
         Route::get('/', [EtalaseBookController::class, 'index'])->name('.index');
+        Route::post('/item', [EtalaseBookController::class, 'kategori_store'])->name('.item');
+        Route::delete('/item/{etalaseBook:id}', [EtalaseBookController::class, 'kategori_delete'])->name('.item.delete');
 
         Route::post('/group', [EtalaseBookController::class, 'store_group'])->name('.group');
         Route::delete('/group/{etalaseGroup:id}', [EtalaseBookController::class, 'delete_group'])->name('.group.delete');

@@ -19,6 +19,9 @@
             --bs-btn-padding-x: .5rem;
             --bs-btn-font-size: 12px;
         }
+        .dataTables_wrapper .row:first-child {
+            padding: .25rem !important;
+        }
     </style>
 
     <script>

@@ -60,4 +60,34 @@ class EtalaseBookController extends Controller
         return redirect()->back()->with('success', 'Etalase Group berhasil dihapus');
     }
 
+    public function kategori_delete(EtalaseBook $etalaseBook)
+    {
+        $etalaseBook->delete();
+        return redirect()->back()->with('cat_success', 'Etalase Group berhasil dihapus');
+    }
+
+    public function kategori_store(Request $request)
+    {
+        $request->validate([
+            'name_cat' => 'required',
+            'group_id' => 'required'
+        ]);
+        if ($request->item_id) {
+            $item = EtalaseBook::find($request->item_id);
+            $item->name = $request->name_cat;
+            $item->slug = makeSlugModel($request->name_cat, EtalaseBook::class);
+            $item->etalase_group_id = $request->group_id;
+            $item->save();
+        } else {
+            EtalaseBook::create([
+                'name' => $request->name_cat,
+                'etalase_group_id' => $request->group_id,
+                'slug' => makeSlugModel($request->name_cat, EtalaseBook::class),
+                'user_id' => Auth::id()
+            ]);
+        }
+
+        return redirect()->back()->with('cat_success', 'Etalase Group berhasil disimpan');
+    }
+
 }

@@ -10,7 +10,7 @@
                 </button>
                 @if ($e->etalase_count > 0)
                     @php
-                        $title = "Tidak dapat menghapus kategori ini karena terdapat {$e->etalase_count} buku didalamnya";
+                        $title = "Tidak dapat menghapus group ini karena terdapat {$e->etalase_count} kategori didalamnya";
                     @endphp
                     <button title="{{ $title }}" class="btn btn-sm btn-danger" onclick="alert('{{ $title }}')">
                         <i class="fa fs-6 fa-trash"></i>
