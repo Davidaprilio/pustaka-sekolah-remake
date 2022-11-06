@@ -2,14 +2,16 @@
     "name": "laravel/laravel",
     "type": "project",
     "description": "The Laravel Framework.",
-    "keywords": ["framework", "laravel"],
+    "keywords": [
+        "framework",
+        "laravel"
+    ],
     "license": "MIT",
     "require": {
         "php": "^7.3|^8.0",
         "davidaprilio/laraboots5": "^1.0",
         "fruitcake/laravel-cors": "^2.0",
         "guzzlehttp/guzzle": "^7.0.1",
-        "itsgoingd/clockwork": "^5.1",
         "jantinnerezo/livewire-alert": "^2.2",
         "laravel/framework": "^8.75",
         "laravel/jetstream": "^2.6",
@@ -17,7 +19,9 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.5",
         "setasign/fpdi-fpdf": "^2.3",
-        "staudenmeir/eloquent-json-relations": "^1.1"
+        "spatie/pdf-to-image": "^2.2",
+        "staudenmeir/eloquent-json-relations": "^1.1",
+        "yajra/laravel-datatables-oracle": "^9.0"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
@@ -32,7 +36,10 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/"
-        }
+        },
+        "files": [
+            "app/Helpers/MyFunction.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {

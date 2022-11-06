@@ -1,148 +1,202 @@
 <!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-  <base href="">
-  <title>Pustaka Sekolah</title>
-  <meta charset="utf-8" />
-  <meta name="description" content="Pustaka" />
-  <meta name="keywords" content="Pustaka" />
-  <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <meta property="og:locale" content="id_ID" />
-  <meta property="og:type" content="article" />
-  <meta property="og:title" content="Pustaka" />
-  <meta property="og:url" content="https://keenthemes.com/metronic" />
-  <meta property="og:site_name" content="Keenthemes | Metronic" />
-  <link rel="canonical" href="https://preview.keenthemes.com/metronic8" />
-  <link rel="shortcut icon" href="{{ asset('assets/media/logos/favicon.ico') }}" />
-  <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Poppins:300,400,500,600,700" />
-  <link href="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.css') }}" rel="stylesheet"
-    type="text/css" />
-  <link href="{{ asset('assets/plugins/global/plugins.bundle.css') }}" rel="stylesheet" type="text/css" />
-  <link href="{{ asset('assets/css/style.bundle.css') }}" rel="stylesheet" type="text/css" />
-  @livewireStyles
-  @livewireScripts
-  <script src="https://cdn.jsdelivr.net/gh/alpinejs/alpine@v2.8.2/dist/alpine.min.js" defer></script>
-  <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
-  <x-livewire-alert::scripts />
-  @stack('head')
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, shrink-to-fit=no">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+    <title>Panel Guru | Perpustakaan Elektronik</title>
+    {{-- <link rel="stylesheet" href="{{ url('/bootstrap/css/bootstrap.min.css') }}"> --}}
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-Zenh87qX5JnK2Jl0vWa8Ck2rdkQ2Bzep5IDxbcnCeuOxjzrPF/et3URy9Bv1WTRi" crossorigin="anonymous">
+    <link rel="stylesheet" href="{{ url('/admin/css/styles.min.css') }}">
+    <link rel="stylesheet" href="{{ url('/fonts/font-awesome.min.css') }}">
+    {{-- <link rel="stylesheet" href="//cdn.datatables.net/1.12.1/css/jquery.dataTables.min.css"> --}}
+    <link rel="stylesheet" href="https://cdn.datatables.net/1.12.1/css/dataTables.bootstrap5.min.css">
+    <script src="{{ url('/js/jquery-3.5.1.min.js') }}"></script>
+    <style>
+        .btn-xs {
+            --bs-btn-padding-y: .18rem;
+            --bs-btn-padding-x: .5rem;
+            --bs-btn-font-size: 12px;
+        }
+    </style>
+
+    <script>
+        function csrf_token() {
+            return document.querySelector('meta[name="csrf-token"]').getAttribute('content');
+        }
+
+        function url(path) {
+            if (!path.startsWith('/')) {
+                path = '/' + path;
+            }
+            return "{{ url('/') }}" + path;
+        }
+
+        function ajaxPromise(url, method = 'GET', data, options = {}) {
+            return new Promise((resolve, reject) => {
+                $.ajax({
+                    url: url,
+                    method: method,
+                    data: data,
+                    ...options,
+                    success: function(response) {
+                        resolve(response);
+                    },
+                    error: function(error) {
+                        reject(error);
+                    }
+                });
+            });
+        }
+
+        async function submitForm(idForm) {
+            let form
+            if (typeof idForm === 'string') {
+                form = document.querySelector(idForm);
+                if (!form) {
+                    throw new Error(`Form ${idForm} tidak ditemukan`);
+                }
+            } else {
+                // check is jquery object
+                form = (idForm instanceof jQuery) ? idForm[0] : idForm;
+                if (form.tagName !== 'FORM') {
+                    throw new Error('Element bukan form');
+                }
+            }
+            const formData = new FormData(form);
+            const url = form.getAttribute('action');
+            const method = form.getAttribute('method');
+            const options = {
+                processData: false,
+                contentType: false,
+            };
+            return await ajaxPromise(url, method, formData, options);
+        }
+
+        function bsAlert(content, color = 'success', dissmissable = true) {
+            const alert = document.createElement('div');
+            alert.classList.add('alert', `alert-${color}`);
+            if (dissmissable) {
+                alert.classList.add('alert-dismissible', 'fade', 'show');
+                alert.setAttribute('role', 'alert');
+                alert.innerHTML = `
+                    ${content}
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                `;
+            } else {
+                alert.innerHTML = content;
+            }
+            return alert;
+        }
+
+        function makeAlertFromError(err) {
+            let alertHTML
+            if (err.status == 500) {
+                alertHTML = bsAlert('Terjadi kesalahan pada server', 'danger');
+            } else if (err.status == 422) {
+                alertHTML = bsAlert(err.responseJSON.message, 'warning');
+            } else {
+                return false
+            }
+            return alertHTML;
+        }
+    </script>
 </head>
+<body class="sb-nav-fixed {{ $tema ?? 'dark' }} bg-light">
+    <nav class="navbar navbar-expand shadow-sm sticky-top sb-topnav py-0 border-bottom border-warning">
+        <div class="container-fluid">
+            <button class="btn btn-link btn-sm ms-2 text-light order-1 order-md-2" id="sidebarToggle" type="button">
+                <i class="fa fa-bars"></i>
+            </button>
+            <a href="<?= url('/Pustaka'); ?>" class="order-3">
+            <button class="btn btn-link btn-sm text-light d-none d-sm-inline-block" type="button">
+                <i class="fa fa-home"></i>
+            </button></a>
+            <a class="navbar-brand d-flex order-2 order-md-1" href="/Administrator">
+                <img src="/img/logo/pustakaM.png">
+                <div class="brand-txt">
+                    <h4 class="mb-0">Pustaka</h4>
+                    <small class="d-block">Panel Guru</small>
+                </div>
+            </a>
+            <span class="ms-auto order-4">
+            </span>
 
-<body id="kt_body"
-  class="header-fixed header-tablet-and-mobile-fixed toolbar-enabled toolbar-fixed aside-enabled aside-fixed"
-  style="--kt-toolbar-height:55px;--kt-toolbar-height-tablet-and-mobile:55px">
-  <div class="d-flex flex-column flex-root">
-    <div class="page d-flex flex-row flex-column-fluid">
-      <div id="kt_aside" class="aside aside-dark aside-hoverable" data-kt-drawer="true" data-kt-drawer-name="aside"
-        data-kt-drawer-activate="{default: true, lg: false}" data-kt-drawer-overlay="true"
-        data-kt-drawer-width="{default:'200px', '300px': '250px'}" data-kt-drawer-direction="start"
-        data-kt-drawer-toggle="#kt_aside_mobile_toggle">
-        <div class="aside-logo flex-column-auto" id="kt_aside_logo">
-          <a href="../../demo1/dist/index.html">
-            <img alt="Logo" src="{{ asset('assets/media/logos/logo-1-dark.svg') }}" class="h-25px logo" />
-          </a>
-          <div id="kt_aside_toggle" class="btn btn-icon w-auto px-0 btn-active-color-primary aside-toggle"
-            data-kt-toggle="true" data-kt-toggle-state="active" data-kt-toggle-target="body"
-            data-kt-toggle-name="aside-minimize">
-            <span class="svg-icon svg-icon-1 rotate-180">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path opacity="0.5"
-                  d="M14.2657 11.4343L18.45 7.25C18.8642 6.83579 18.8642 6.16421 18.45 5.75C18.0358 5.33579 17.3642 5.33579 16.95 5.75L11.4071 11.2929C11.0166 11.6834 11.0166 12.3166 11.4071 12.7071L16.95 18.25C17.3642 18.6642 18.0358 18.6642 18.45 18.25C18.8642 17.8358 18.8642 17.1642 18.45 16.75L14.2657 12.5657C13.9533 12.2533 13.9533 11.7467 14.2657 11.4343Z"
-                  fill="black" />
-                <path
-                  d="M8.2657 11.4343L12.45 7.25C12.8642 6.83579 12.8642 6.16421 12.45 5.75C12.0358 5.33579 11.3642 5.33579 10.95 5.75L5.40712 11.2929C5.01659 11.6834 5.01659 12.3166 5.40712 12.7071L10.95 18.25C11.3642 18.6642 12.0358 18.6642 12.45 18.25C12.8642 17.8358 12.8642 17.1642 12.45 16.75L8.2657 12.5657C7.95328 12.2533 7.95328 11.7467 8.2657 11.4343Z"
-                  fill="black" />
-              </svg>
-            </span>
-          </div>
-        </div>
-        @include('layouts.dashboard-menu')
-        <!--end::Aside menu-->
-        <!--begin::Footer-->
-        <div class="aside-footer flex-column-auto pt-5 pb-7 px-5" id="kt_aside_footer">
-          <a href="../../demo1/dist/documentation/getting-started.html" class="btn btn-custom btn-primary w-100"
-            data-bs-toggle="tooltip" data-bs-trigger="hover" data-bs-dismiss-="click"
-            title="200+ in-house components and 3rd-party plugins">
-            <span class="btn-label">Docs &amp; Components</span>
-            <!--begin::Svg Icon | path: icons/duotune/general/gen005.svg-->
-            <span class="svg-icon btn-icon svg-icon-2">
-              <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-                <path opacity="0.3"
-                  d="M19 22H5C4.4 22 4 21.6 4 21V3C4 2.4 4.4 2 5 2H14L20 8V21C20 21.6 19.6 22 19 22ZM15 17C15 16.4 14.6 16 14 16H8C7.4 16 7 16.4 7 17C7 17.6 7.4 18 8 18H14C14.6 18 15 17.6 15 17ZM17 12C17 11.4 16.6 11 16 11H8C7.4 11 7 11.4 7 12C7 12.6 7.4 13 8 13H16C16.6 13 17 12.6 17 12ZM17 7C17 6.4 16.6 6 16 6H8C7.4 6 7 6.4 7 7C7 7.6 7.4 8 8 8H16C16.6 8 17 7.6 17 7Z"
-                  fill="black" />
-                <path d="M15 8H20L14 2V7C14 7.6 14.4 8 15 8Z" fill="black" />
-              </svg>
-            </span>
-            <!--end::Svg Icon-->
-          </a>
-        </div>
-        <!--end::Footer-->
-      </div>
-      <!--end::Aside-->
-      <!--begin::Wrapper-->
-      <div class="wrapper d-flex flex-column flex-row-fluid" id="kt_wrapper">
-        <!--begin::Header-->
-        @include('layouts.dashboard-menu-top')
-        <!--end::Header-->
-        <!--begin::Content-->
-        {{ $slot }}
-        <!--end::Content-->
-        <!--begin::Footer-->
-        <div class="footer py-4 d-flex flex-lg-column" id="kt_footer">
-          <!--begin::Container-->
-          <div class="container-fluid d-flex flex-column flex-md-row align-items-center justify-content-between">
-            <!--begin::Copyright-->
-            <div class="text-dark order-2 order-md-1">
-              <span class="text-muted fw-bold me-1">2021©</span>
-              <a href="https://keenthemes.com" target="_blank" class="text-gray-800 text-hover-primary">Keenthemes</a>
-            </div>
-            <!--end::Copyright-->
-            <!--begin::Menu-->
-            <ul class="menu menu-gray-600 menu-hover-primary fw-bold order-1">
-              <li class="menu-item">
-                <a href="https://keenthemes.com" target="_blank" class="menu-link px-2">About</a>
-              </li>
-              <li class="menu-item">
-                <a href="https://keenthemes.com/support" target="_blank" class="menu-link px-2">Support</a>
-              </li>
-              <li class="menu-item">
-                <a href="https://1.envato.market/EA4JP" target="_blank" class="menu-link px-2">Purchase</a>
-              </li>
+            <ul class="nav navbar-nav text-right d-flex order-5 ms-auto ms-md-0">
+                <li class="nav-item float-right justify-content-end align-items-center border-0" role="presentation">
+                    <div class="nav-item dropdown no-arrow">
+                        <a class="dropdown-toggle active text-white" data-toggle="dropdown" aria-expanded="false" href="#">
+                            <img class="rounded-circle" src="<?= url('/img/boy.jpg'); ?>">
+                            <!-- $dataAdmin['fotoprofile'] -->
+                        </a>
+                        <div class="dropdown-menu dropdown-menu-right shadow" role="menu" style="margin-top: 16px;padding-left: 13px;">
+                            <span class="dropdown-item" id="settIddropdown">Pengaturan</span>
+                            <div class="dropdown-divider"></div>
+                            <x-link class="dropdown-item" role="presentation" :href="route('register')" method="POST">Keluar</x-link>
+                        </div>
+                    </div>
+                </li>
             </ul>
-            <!--end::Menu-->
-          </div>
-          <!--end::Container-->
         </div>
-        <!--end::Footer-->
-      </div>
-      <!--end::Wrapper-->
+    </nav>
+
+    <div id="layoutSidenav">
+        <div id="layoutSidenav_nav">
+            <div id="sidenavAccordion" class="sb-sidenav accordion">
+                <div class="sb-sidenav-menu scrollBar">
+                    <div class="nav mb-5">
+                        <div class="mt-4">
+                            <x-sidebar-menu :link="url('dashboard')" name="Dashboard" icon="fa fa-dashboard" />
+                            <x-sidebar-menu :link="url('tugas')" name="Penugasan" icon="fa fa-book" />
+                            <x-sidebar-menu :link="url('books')" name="Buku" icon="fa fa-book" />
+                            <x-sidebar-menu :link="route('etalase.index')" name="Ketegori" icon="fa fa-book" />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div id="layoutSidenav_content">
+            <main class="bg-light">
+                <div class="p-1 p-md-3 rounded-0 border-0 container-xxl">
+                    @yield('content')
+                </div>
+            </main>
+        </div>
+        <div class="settings" id="settPanel">
+            <div class="topPanel">
+                <h3>Pengaturan</h3>
+                <div class="close">
+                    <div></div>
+                    <div></div>
+                </div>
+            </div>
+            <div class="menusett">
+                <div class="themeM">
+                    Tema
+                    <div>
+                    <button id="default">Default</button>
+                    <button id="light">Light</button>
+                    <button class="apply" id="dark">Dark</button>
+                    </div>
+                </div>
+            </div>
+        </div>
     </div>
-    <!--end::Page-->
-  </div>
-  <!--end::Root-->
 
-  <div id="kt_scrolltop" class="scrolltop" data-kt-scrolltop="true">
-    <span class="svg-icon">
-      <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none">
-        <rect opacity="0.5" x="13" y="6" width="13" height="2" rx="1" transform="rotate(90 13 6)" fill="black" />
-        <path
-          d="M12.5657 8.56569L16.75 12.75C17.1642 13.1642 17.8358 13.1642 18.25 12.75C18.6642 12.3358 18.6642 11.6642 18.25 11.25L12.7071 5.70711C12.3166 5.31658 11.6834 5.31658 11.2929 5.70711L5.75 11.25C5.33579 11.6642 5.33579 12.3358 5.75 12.75C6.16421 13.1642 6.83579 13.1642 7.25 12.75L11.4343 8.56569C11.7467 8.25327 12.2533 8.25327 12.5657 8.56569Z"
-          fill="black" />
-      </svg>
-    </span>
-  </div>
-
-  <script>
-    var hostUrl = "{{ asset('assets') }}";
-  </script>
-  <script src="{{ asset('assets/plugins/global/plugins.bundle.js') }}"></script>
-  <script src="{{ asset('assets/js/scripts.bundle.js') }}"></script>
-  {{-- <script src="{{ asset('assets/plugins/custom/fullcalendar/fullcalendar.bundle.js') }}"></script> --}}
-  <script src="{{ asset('assets/js/custom/widgets.js') }}"></script>
-  {{-- <script src="{{ asset('assets/js/custom/apps/chat/chat.js') }}"></script> --}}
-  <script src="{{ asset('assets/js/custom/modals/create-app.js') }}"></script>
-  <script src="{{ asset('assets/js/custom/modals/upgrade-plan.js') }}"></script>
-  @stack('script')
+    {{-- <script src="{{ url('/bootstrap/js/bootstrap.min.js') }}"></script> --}}
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.2/dist/js/bootstrap.bundle.min.js" integrity="sha384-OERcA2EqjJCMA+/3y+gxIOqMEjwtxJY7qPCqsdltbNJuaOe923+mo//f6V8Qbsw3" crossorigin="anonymous"></script>
+    <script src="<?= url('/admin/js/script.min.js') ?>"></script>
+    <script src="<?= url('/admin/js/liveSearch.js') ?>"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/jquery.dataTables.min.js"></script>
+    <script src="//cdn.datatables.net/1.12.1/js/dataTables.bootstrap5.min.js"></script>
+    <script src="//cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <script>
+        $.extend(true, $.fn.dataTable.defaults, {
+            // adjust column sizing
+            autoWidth: false,
+        });
+    </script>
+    @yield('js')
 </body>
-
 </html>

@@ -2,76 +2,146 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Book;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
-use Imagick;
+use Yajra\DataTables\Facades\DataTables;
+use imagick;
 
 class BookController extends Controller
 {
+    public function index(Request $request)
+    {
+        if ($request->ajax()) {
+            $books = Book::orderBy('created_at', 'DESC');
+            return DataTables::of($books)->toJson();
+        }
+        return view('books.index');
+    }
 
     public function create()
     {
-        return view('book.create', []);
+        return view('books.create', []);
     }
 
-    public function store(Request $request)
+    public function edit(Book $book)
     {
-        $$im = new Imagick();
-        $im->setResolution(300, 300);
-        $im->readImage("test.pdf");
-        $im->writeImage(public_path('/'));
-        header('Content-Type: image/jpeg');
-        echo $im;
-        return true;
-        $file_book = $request->file('book');
-        // dd($file_book);
-        self::split_pdf('test.pdf');
+        // userHasRole('admin')
+
+        return view('books.edit', [
+            'book' => $book
+        ]);
     }
 
-
-    /**
-     * Membagi File PDF per-halaman 
-     * Menjadi File PDF baru
-     */
-    static function split_pdf(string $filename)
+    public function update(Request $request, Book $book)
     {
+        $book->update([
+            'title' => $request->title,
+            'description' => $request->desc,
+            'publisher' => $request->publisher,
+            'writer' => $request->writer,
+        ]);
+
+        return redirect()->route('books.edit', $book->slug)->with('success', 'Buku berhasil disimpan');
+    }
+
+    public function upload_book_pdf(Request $request)
+    {
+        $request->validate([
+            'file_book' => 'required|mimes:pdf',
+        ]);
+        $file_book = $request->file('file_book');
+
+        // get strean file_book
+        $stream = fopen($file_book, 'r+');
+    
         $pdf = new Fpdi();
-        $pageCount = $pdf->setSourceFile($filename);
-        $file = pathinfo($filename, PATHINFO_FILENAME);
-        $path = "book/{$file}";
-        $pdf->AddPage();
-
-        Storage::makeDirectory($path);
-        $pathFile = storage_path("app/{$path}");
-        // Split each page into a new PDF
-        $newPdf = new Fpdi();
-        $newPdf->setSourceFile($filename);
-
-        $split = 4;
-        $on_page = 1;
-        for ($i = 1; $i <= ($pageCount / $split); $i++) {
-            $last_page = 0;
-            for ($a = $on_page; $a <= ($on_page + ($split - 1)); $a++) {
-                $newPdf->addPage();
-                $newPdf->useTemplate($newPdf->importPage($a));
-                $last_page = $a;
+        try {
+            $page_count = $pdf->setSourceFile($stream);
+        } catch (\Throwable $th) {
+            if ($th->getCode() == 268) {
+                return redirect()->back()->withErrors(['file_book' => 'File PDF tidak bisa di upload karena file PDF terenkripsi (terdapat password)']);
             }
 
-            $newPdf->output("{$pathFile}/{$on_page}_{$last_page}.pdf", 'F');
+            return redirect()->back()->withErrors(['file_book' => 'File PDF tidak bisa diproses karena terjadi kesalahan']);
         }
+
+        $book_title = $file_book->getClientOriginalName();
+        $book_slug = str_slug($book_title);
+        if ($duplicate_book = Book::firstWhere('slug', $book_slug)) {
+            return redirect()->back()->withErrors([
+                'file_book' => 'File PDF sudah pernah di upload sebelumnya dengan judul ' . $duplicate_book->title,
+                'dublicate_book' => $duplicate_book->slug
+            ]);
+        }
+
+        // $book_info['cover'] = $cover;
+        $book_path = $file_book->store('public/books');
+        $book_path = storage_url($book_path);
+        
+        $book_info = [
+            'slug' => $book_slug,
+            'title' => $book_title,
+            'pages' => $page_count, 
+            'download' => 0,
+            'read' => 0,
+            'publish' => 0,
+            'files' => '[]',
+            'cover' => '/',
+            'user_id' => Auth::id(),
+            'path' => $book_path,
+        ];
+
+        $book = Book::create($book_info);
+        
+        return redirect()->route('books.edit', [
+            'book' => $book->slug
+        ])->with('success', 'Buku berhasil di upload');
+    }
+
+    static function split_pdf(string $storepath)
+    {
+        Storage::deleteDirectory("livewire-tmp");
+        $data = ['files' => []];
+        $pathFile = storage_path("app/{$storepath}");
+        $filename = pathinfo($pathFile, PATHINFO_FILENAME);
+        $data['path'] = $filename;
+        $path_books = storage_path("app/public/book/{$filename}");
+        $pdf = new Fpdi();
+        $pageCount = $pdf->setSourceFile($pathFile);
+        $data['pages'] = $pageCount;
         $pdf->close();
-        return 's';
-        $on_page = $on_page - 1;
-        $kurang = ($pageCount - $on_page);
-        if ($kurang > 0) {
-            $firstPage = ($on_page + 1);
-            $lastPage = ($on_page + $kurang);
-            if ($firstPage == $lastPage) {
-                echo  "{$firstPage}";
-            } else {
-                echo  "{$firstPage}-{$lastPage}";
-            }
+        Storage::makeDirectory("public/book/{$filename}");
+
+        $page_arr = [];
+
+        // Split each page into a new PDF
+        for ($a = 1; $a <= $pageCount; $a++) {
+            $newPdf = new Fpdi();
+            $newPdf->setSourceFile($pathFile);
+
+            $templateId = $newPdf->importPage($a);
+            $sizePage = $newPdf->getTemplateSize($templateId);
+            $newPdf->AddPage($sizePage['orientation'], [
+                $sizePage['width'],
+                $sizePage['height']
+            ]);
+            $newPdf->useTemplate($templateId);
+            $storage_path = "{$path_books}/{$a}.pdf";
+            $newPdf->output($storage_path, 'F');
+            $newPdf->close();
         }
+        Storage::delete($storepath);
+        return $data;
+    }
+
+    public function delete(Book $book)
+    {
+        $book->delete();
+
+        return redirect()->back()->with('success', 'Buku berhasil dihapus');
     }
 }

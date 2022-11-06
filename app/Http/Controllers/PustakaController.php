@@ -23,35 +23,28 @@ class PustakaController extends Controller
         $state_page = $request->segment(2) === null
             ? 'list'
             : 'detail';
-        $etalase = EtalaseGroup::all();
-        $etalase->load('etalase');
-        $menu_etalase = [];
-        foreach ($etalase as $value) {
-            array_push($menu_etalase, [
-                'name' => $value->name,
-                'slug' => $value->slug,
-                'stack' => Arr::pluck($value->etalase, 'slug', 'name')
-            ]);
-        }
-        return view('pustaka.index', [
+
+        return view('pustaka.book-list', [
             'state_page' => $state_page,
             'keyword' => $keyword,
-            'etalase_menu' => $menu_etalase
+            'etalase_menu' => app('etalase_menu')
         ]);
     }
 
     public function books(Request $request)
     {
-        $stack = $request->segment(4);
+        $stack = $request->stack;
+        $etalase_book = EtalaseBook::with(['books' => fn ($q) => $q->orderBy('created_at', 'DESC')])->withCount('books');
         if ($stack === 'semua-buku') {
-            $etalase_book = EtalaseBook::all();
+            $etalase_book = $etalase_book->having('books_count', '>', 0)->orderBy('books_count', 'desc')->take(10)->get();
+            $etalase_book->map(fn ($q) => $q->setRelation('books', $q->books->take(6)));
         } else {
-            $etalase_book = EtalaseBook::firstWhere('slug', $stack);
+            $etalase_book = $etalase_book->where('slug', $stack)->first();
         }
-        if ($etalase_book) $etalase_book->load('books');
-
+        // dd($etalase_book, $stack);
         return view('pustaka.book-list', [
-            'etalase_book' => $etalase_book
+            'etalase_book' => $etalase_book,
+            'is_ajax' => $request->ajax(),
         ]);
     }
 
@@ -61,7 +54,8 @@ class PustakaController extends Controller
         $book = Book::firstWhere('slug', $request->slug);
 
         return view('pustaka.detail-book', [
-            'book' => $book
+            'book' => $book,
+            'is_ajax' => $request->ajax()
         ]);
     }
 
@@ -69,6 +63,9 @@ class PustakaController extends Controller
     public function baca(Request $request, Book $book)
     {
         $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
+
+        dd($read_sesi);
+
         if (!$read_sesi) {
             $read_sesi = ReadSession::create([
                 'user_id' => $request->user()->id,

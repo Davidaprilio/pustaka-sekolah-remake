@@ -25,6 +25,11 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        //
+        $roles = \App\Models\Role::all();
+        foreach ($roles as $role) {
+            Gate::define($role->name, function ($user) use ($role) {
+                return $user->hasRole($role->name);
+            });
+        }
     }
 }

@@ -14,6 +14,11 @@ class EtalaseBook extends Model
 
     public function books()
     {
-        return $this->hasMany(PivotEtalaseBook::class, 'etalase_book_id');
+        return $this->belongsToMany(Book::class, 'pivot_etalase_books', 'etalase_book_id', 'book_id');
+    }
+
+    public function group()
+    {
+        return $this->belongsTo(EtalaseGroup::class, 'etalase_group_id');
     }
 }

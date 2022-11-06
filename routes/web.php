@@ -1,5 +1,7 @@
 <?php
 
+use App\Http\Controllers\BookController;
+use App\Http\Controllers\EtalaseBookController;
 use App\Http\Controllers\PustakaController;
 use App\Http\Livewire as Wire;
 use Illuminate\Support\Facades\Route;
@@ -20,17 +22,41 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::get('dashboard', Wire\Book\Show::class)->name('dashboard');
+    Route::view('/dashboard', 'dashboard');
 
-    Route::get('books', Wire\Book\Show::class)->name('book.index');
+    Route::prefix('books')->name('books')->group(function () {
+        Route::get('/', [BookController::class, 'index']);
+        Route::get('create', [BookController::class, 'create'])->name('.create');
+        Route::post('create', [BookController::class, 'upload_book_pdf']);
+        Route::put('create', [BookController::class, 'store']);
+        Route::get('detail/{book}', [BookController::class, 'index'])->name('.detail');
+
+        Route::get('edit/{book:slug}', [BookController::class, 'edit'])->name('.edit');
+        Route::post('edit/{book:slug}', [BookController::class, 'update']);
+        Route::delete('{book:slug}', [BookController::class, 'delete'])->name('.delete');
+    });
+
+    Route::prefix('kategori')->name('etalase')->group(function () {
+        Route::get('/', [EtalaseBookController::class, 'index'])->name('.index');
+
+        Route::post('/group', [EtalaseBookController::class, 'store_group'])->name('.group');
+        Route::delete('/group/{etalaseGroup:id}', [EtalaseBookController::class, 'delete_group'])->name('.group.delete');
+    });
+
+
+
     Route::get('pustaka/aktivitas', Wire\Activity\Show::class)->name('pustaka.activity');
     Route::get('etalase', Wire\Stack\Show::class)->name('etalase-stack');
+
+
+    Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
 });
+
+Route::get('books/{book:slug}', [PustakaController::class, 'baca']);
 
 Route::get('json/pustaka/etalase/{stack}', [PustakaController::class, 'books']);
 Route::get('json/pustaka/book/{slug}', [PustakaController::class, 'book']);
 
-Route::get('books/{book:slug}', [PustakaController::class, 'baca']);
-Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
 Route::get('reading/book/action/{book:slug}/{num}', [PustakaController::class, 'refreshSessionReading']);
-Route::get('/{stack}', [PustakaController::class, 'index']);
+Route::get('/{stack}', [PustakaController::class, 'books']);
+Route::get('/{stack}/{slug}', [PustakaController::class, 'book']);

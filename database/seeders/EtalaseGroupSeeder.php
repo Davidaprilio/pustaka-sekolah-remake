@@ -22,9 +22,14 @@ class EtalaseGroupSeeder extends Seeder
             ],
             [
                 'user_id' => 1,
-                'name' => 'Drakor',
-                'slug' => 'drakor'
-            ]
+                'name' => 'Komik',
+                'slug' => 'komik'
+            ],
+            [
+                'user_id' => 1,
+                'name' => 'Novel',
+                'slug' => 'novel'
+            ],
         ]);
     }
 }

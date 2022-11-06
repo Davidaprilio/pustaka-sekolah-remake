@@ -17,7 +17,9 @@ class CreateHistoryReadingsTable extends Migration
             $table->id();
             $table->foreignId('user_id');
             $table->foreignId('book_id');
-            $table->integer('long_time');
+            $table->bigInteger('long_time')->default(0)->comment('satuan detik');
+            $table->integer('last_page')->comment('halaman terakhir dibaca');
+
             $table->timestamps();
         });
     }

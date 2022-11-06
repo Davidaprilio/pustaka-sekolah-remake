@@ -4,6 +4,20 @@
 .bg-gray-50 {
     background-color: #e2e6ea;
 }
+
+#loading-bar {
+    height: 3px;
+    z-index: 0;
+    bottom: -4px;
+    position: absolute;
+    left: 0;
+    right: 0;
+}
+
+.cover-mini.skeleton {
+    min-height: 220px;
+}
+
 .sidenav {
     z-index: 2;
     overflow-x: scroll;
@@ -101,9 +115,10 @@ ol.breadcrumb {
     border-radius: 25px;
 }
 .conten-scroll::-webkit-scrollbar-thumb {
-    background: #989078;
+    background: #f1c63f;
     border-radius: 25px;
 }
+
 /* .conten-scroll .card,
 #buku .row .card {
     width: 141px;
@@ -167,7 +182,8 @@ ol.breadcrumb {
     -webkit-box-orient: vertical;
     white-space: normal;
     cursor: pointer;
-    line-height: 15px;
+    line-height: 18px;
+    text-decoration: none;
 }
 .buku_title:hover {
     text-decoration: underline;
@@ -191,6 +207,28 @@ ol.breadcrumb {
     width: 171.5px;
     max-height: 244px;
 }
+
+.book-wd {
+    width: 170px;
+}
+
+#main {
+    width: 100%;
+}
+
+@media (min-width: 576px) {
+    .width-card {
+        max-width: 150px;
+    }
+}
+
+@media (min-width: 991.98px) {
+    #sideBar-menu {
+        position: sticky;
+        top: 48px;
+    }
+}
+
 @media (min-width: 992px) {
     .sidenav {
         transform: translateX(0);
@@ -209,6 +247,9 @@ ol.breadcrumb {
 }
 
 @media (max-width: 575px) {
+    .book-wd {
+        width: 140px;
+    }
     #rowBook {
         padding: 0 5%;
     }
@@ -282,5 +323,8 @@ ol.breadcrumb {
     .conten-scroll .card img,
     #buku .row .card img {
         min-height: 130px;
+    }
+    .book-wd {
+        width: 140px;
     }
 }

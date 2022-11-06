@@ -16,7 +16,7 @@ class Book extends Model
     ];
 
     protected $casts = [
-        'files' => AsArrayObject::class
+        // 'files' => AsArrayObject::class
     ];
 
 
