@@ -3,7 +3,7 @@
 use App\Http\Controllers\BookController;
 use App\Http\Controllers\EtalaseBookController;
 use App\Http\Controllers\PustakaController;
-use App\Http\Livewire as Wire;
+// use App\Http\Livewire as Wire;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -16,6 +16,8 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
+
+Route::view('/try', 'trying');
 
 Route::get('/', function () {
     return redirect('/semua-buku');
@@ -47,8 +49,8 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
 
 
 
-    Route::get('pustaka/aktivitas', Wire\Activity\Show::class)->name('pustaka.activity');
-    Route::get('etalase', Wire\Stack\Show::class)->name('etalase-stack');
+    // Route::get('pustaka/aktivitas', Wire\Activity\Show::class)->name('pustaka.activity');
+    // Route::get('etalase', Wire\Stack\Show::class)->name('etalase-stack');
 
 
     Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);

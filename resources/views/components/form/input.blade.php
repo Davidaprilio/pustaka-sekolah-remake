@@ -7,12 +7,13 @@
     'default' => null,
     'name' => 'input',
     'col' => '',
+    'ccol' => null,
 ])
 @php
 $id = $id ?? $name . '-input';
 @endphp
 
-<div class="form-group {{ $col }}">
+<div class="{{ $ccol ?? "form-group" . ($col ? " {$col}" : '') }}">
     @if ($label)
         <label class="form-control-label" for="{{ $id }}">{{ $label }}</label>
     @endif
@@ -29,4 +30,5 @@ $id = $id ?? $name . '-input';
             <span class="invalid-feedback" role="alert">{{ $message }}</span>
         @enderror
     @endif
+    {{ $slot }}
 </div>

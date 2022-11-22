@@ -4,5 +4,5 @@
 ])
 
 @error($name)
-    <x-alert.basic :type="$type" :dismiss="$dismiss" :message="$message" :id="$type" />
+    <x-alert.basic type="danger" :dismiss="$dismiss" :message="$message" />
 @enderror

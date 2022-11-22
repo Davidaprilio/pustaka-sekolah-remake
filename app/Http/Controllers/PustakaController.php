@@ -40,7 +40,11 @@ class PustakaController extends Controller
             $etalase_book->map(fn ($q) => $q->setRelation('books', $q->books->take(6)));
         } else {
             $etalase_book = $etalase_book->where('slug', $stack)->first();
+            if ($etalase_book === null) {
+                return view('pustaka.not-found');
+            }
         }
+        
         // dd($etalase_book, $stack);
         return view('pustaka.book-list', [
             'etalase_book' => $etalase_book,
@@ -63,9 +67,7 @@ class PustakaController extends Controller
     public function baca(Request $request, Book $book)
     {
         $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
-
-        dd($read_sesi);
-
+        
         if (!$read_sesi) {
             $read_sesi = ReadSession::create([
                 'user_id' => $request->user()->id,
@@ -74,6 +76,8 @@ class PustakaController extends Controller
                 'last_page' => 1
             ]);
         }
+        
+        dd($read_sesi);
         return view('pustaka.book-reader-legacy', [
             'book' => $book,
             'user' => $request->user()

@@ -8,8 +8,8 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use setasign\Fpdi\Fpdi;
+use Intervention\Image\Facades\Image;
 use Yajra\DataTables\Facades\DataTables;
-use imagick;
 
 class BookController extends Controller
 {
@@ -52,12 +52,12 @@ class BookController extends Controller
     {
         $request->validate([
             'file_book' => 'required|mimes:pdf',
+            'cover_book' => 'required'
         ]);
         $file_book = $request->file('file_book');
 
         // get strean file_book
         $stream = fopen($file_book, 'r+');
-    
         $pdf = new Fpdi();
         try {
             $page_count = $pdf->setSourceFile($stream);
@@ -65,7 +65,6 @@ class BookController extends Controller
             if ($th->getCode() == 268) {
                 return redirect()->back()->withErrors(['file_book' => 'File PDF tidak bisa di upload karena file PDF terenkripsi (terdapat password)']);
             }
-
             return redirect()->back()->withErrors(['file_book' => 'File PDF tidak bisa diproses karena terjadi kesalahan']);
         }
 
@@ -77,6 +76,12 @@ class BookController extends Controller
                 'dublicate_book' => $duplicate_book->slug
             ]);
         }
+
+        $cover = Image::make($request->cover_book);
+        $cover->resize(200, null, fn ($constraint) => $constraint->aspectRatio());
+        $path_cover = "public/cover.webp";
+        $cover->save(storage_path('app/'.$path_cover));
+        $path_cover = storage_url($path_cover);
 
         // $book_info['cover'] = $cover;
         $book_path = $file_book->store('public/books');
@@ -90,7 +95,7 @@ class BookController extends Controller
             'read' => 0,
             'publish' => 0,
             'files' => '[]',
-            'cover' => '/',
+            'cover' => $path_cover,
             'user_id' => Auth::id(),
             'path' => $book_path,
         ];

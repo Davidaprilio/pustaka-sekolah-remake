@@ -28,11 +28,21 @@
                     <div class="row justify-content-center my-5">
                         <div class="col-10">
                             <x-alert.error name="file_book" />
+                            <canvas id="pdf-canvas" class="d-none"></canvas>
 
                             <x-form :action="route('books.create')" id="form-book" method="POST" enctype="multipart/form-data">
                                 <input type="file" id="file-book" name="file_book" class="d-none">
+                                <input type="hidden" name="cover_book" id="cover_book">
                                 <div class="d-flex flex-column p-3 border rounded-5 text-center">
                                     <h2>Upload Buku PDF</h2>
+
+                                    <div class="text-center">
+                                        <div id="pdf-preview" class="overflow-hidden mx-auto" style="max-width: 200px;">
+                                            <img class="img-fluid border rounded" src="https://via.placeholder.com/150x200?text=Banner+PDF">
+                                        </div>
+                                        <small id="title-pdf"></small>
+                                    </div>
+
                                     <div>
                                         <button type="button" class="btn btn-primary btn-lg mb-3 mt-5" id="btn-browse-file" width="200px">
 											Browse File
@@ -50,6 +60,7 @@
 @endsection
 
 @section('js')
+    <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script>
         $(document).ready(function() {
             if($('#alert-file_book').length > 0) {
@@ -91,11 +102,6 @@
                 }
             ]
         })
-
-		$('#file-book').change(function() {
-			$('#btn-browse-file').html('<div class="spinner-border text-light" role="status"></div><span class="ms-2">Uploading...</span>')
-			$('#form-book').submit()
-		})
 		
 		$('#btn-browse-file').click(function() {
 			$('#file-book').click();
@@ -119,7 +125,96 @@
                 }
             })
         })
+    </script>
 
+    <script>
+        const canvas = document.getElementById('pdf-canvas');
 
+        function makeImgFromCanvas(canvas) {
+            // format the image with webp
+            var img = document.createElement('img');
+            img.classList.add('img-fluid', 'border', 'rounded')
+            var imgBase64 = canvas.toDataURL('image/webp', 1.0)
+            $('#cover_book').val(imgBase64)
+            img.src = imgBase64;
+            const container = document.getElementById('pdf-preview')
+            container.innerHTML = ''
+            container.appendChild(img)
+            return img;
+        }
+
+        function loadPDFjsLib(file) {
+            var pdfjsLib = window['pdfjs-dist/build/pdf'];
+            pdfjsLib.GlobalWorkerOptions.workerSrc = '//mozilla.github.io/pdf.js/build/pdf.worker.js';
+            return pdfjsLib;
+        }
+
+        async function loadFilePDF(file) {
+            return await pdfjsLib.getDocument(file).promise
+        }
+
+        function readFile(file){
+            return new Promise((resolve, reject) => {
+                var fr = new FileReader();  
+                fr.onload = () => {
+                    resolve(new Uint8Array(fr.result))
+                };
+                fr.onerror = reject;
+                fr.readAsArrayBuffer(file);
+            });
+        }
+        
+        $('#file-book').change(async function() {
+            const inputFile = this
+            const nameFile = inputFile.files[0].name
+            console.log('Loading a file', nameFile);
+            $('#btn-browse-file').prop('disabled', true)
+            $('#btn-browse-file').html(/*html*/`<div class="spinner-border text-light" role="status"></div>
+            <span class="ms-2">Cheking..</span>`)
+            
+            $('#title-pdf').text(nameFile ?? '')
+
+            try {
+                const typedarray = await readFile(inputFile.files[0])
+                console.log(typedarray)
+                var pdf = await loadFilePDF(typedarray)
+            } catch (error) {
+                // Failed to fetch
+                // Invalid PDF
+                console.error('Error Loading PDF', error);
+                $('#btn-browse-file').prop('disabled', false)
+                alert(error.message);
+                return false
+            }
+			
+            const page = await pdf.getPage(1)
+            console.log('Page 1 loaded');
+            const viewport = page.getViewport({scale: 1});
+
+            // Prepare canvas using PDF page dimensions
+            const context = canvas.getContext('2d');
+            canvas.height = viewport.height;
+            canvas.width = viewport.width;
+            console.log('viewport', viewport)
+
+            // Render PDF page into canvas context
+            await page.render({
+                canvasContext: context,
+                viewport: viewport
+            }).promise
+            console.log('Page rendered');
+
+            makeImgFromCanvas(canvas)
+
+            $('#btn-browse-file').html(/*html*/`<div class="spinner-border text-light" role="status"></div>
+            <span class="ms-2">Uploading...</span>`)
+
+            setTimeout(() => {
+                $('#form-book').submit()
+            }, 700);
+
+		})
     </script>
 @endsection
+
+{{-- g5122111602501 --}}

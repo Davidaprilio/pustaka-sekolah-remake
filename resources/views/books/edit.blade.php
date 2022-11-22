@@ -16,7 +16,7 @@
                     <input type="file" class="d-none">
                     <div class="card d-inline-block shadow-sm mb-1 mx-1 width-card">
                         <div class="w-100" style="border-bottom: 1px solid #eee;">
-                            <img src="{{ url('assets/media/books/1.png') }}" class="w-100 mx-auto img-cover-book cover-mini skeleton">
+                            <img src="{{ $book->cover ?? url('assets/media/books/1.png') }}" class="w-100 mx-auto img-cover-book cover-mini skeleton">
                         </div>
                     </div>
                     <div class="text-center">
