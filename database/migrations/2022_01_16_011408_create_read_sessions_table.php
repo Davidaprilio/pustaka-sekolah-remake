@@ -20,6 +20,7 @@ class CreateReadSessionsTable extends Migration
             $table->foreignId('task_id')->nullable();
             $table->jsonb('history');
             $table->integer('last_page');
+            $table->integer('current_page');
             $table->boolean('on_reading')->default(0);
             $table->integer('percent_completed'); // percent
             $table->integer('long_time'); // minute

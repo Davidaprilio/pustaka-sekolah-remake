@@ -79,6 +79,7 @@ class PustakaController extends Controller
                 'user_id' => $request->user()->id,
                 'book_id' => $book->id,
                 'last_page' => 1,
+                'current_page' => 1,
                 'long_time' => 1,
                 'history' => '[]',
                 'on_reading' => 1,
@@ -104,7 +105,8 @@ class PustakaController extends Controller
 
         $read_sesi->update([
             'last_page' => max($read_sesi->last_page, $request->num_page),
-            'current_page' => $request->num_page
+            'current_page' => $request->num_page,
+            'percent_completed' => intval(round(100 / $book->pages * $read_sesi->last_page))
         ]);
         
         return ['message' => 'OK'];
