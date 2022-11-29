@@ -52,8 +52,21 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
     // Route::get('pustaka/aktivitas', Wire\Activity\Show::class)->name('pustaka.activity');
     // Route::get('etalase', Wire\Stack\Show::class)->name('etalase-stack');
 
-
+    
+    // Route for reading book V1
+    Route::get('reading/book/action/{book:slug}/{num_page}', [PustakaController::class, 'refresh_session_reading']);
     Route::get('baca/buku/{book:slug}', [PustakaController::class, 'baca']);
+
+    /*
+    |================================================
+    | Route for reading book v2
+    |================================================
+    */
+    Route::prefix('read/book')->controller(PustakaController::class)->group(function() {
+        Route::post('/action/{book:slug}/{num_page}', 'refresh_session_reading');
+        Route::get('/{book:slug}', 'baca');
+    });
+
 });
 
 Route::get('books/{book:slug}', [PustakaController::class, 'baca']);
@@ -61,6 +74,5 @@ Route::get('books/{book:slug}', [PustakaController::class, 'baca']);
 Route::get('json/pustaka/etalase/{stack}', [PustakaController::class, 'books']);
 Route::get('json/pustaka/book/{slug}', [PustakaController::class, 'book']);
 
-Route::get('reading/book/action/{book:slug}/{num}', [PustakaController::class, 'refreshSessionReading']);
 Route::get('/{stack}', [PustakaController::class, 'books']);
 Route::get('/{stack}/{slug}', [PustakaController::class, 'book']);

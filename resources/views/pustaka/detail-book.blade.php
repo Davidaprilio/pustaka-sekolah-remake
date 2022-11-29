@@ -37,7 +37,7 @@
                                         </li>
                                     </ul>
                                 </div>
-                                <a href="{{ url('baca/buku/') }}/{{ $book->slug }}" class="btn btn-primary btn-sm mt-auto"
+                                <a href="{{ url("read/book/{$book->slug}") }}" class="btn btn-primary btn-sm mt-auto"
                                     onClick="openBook(this)">
                                     Baca buku
                                 </a>

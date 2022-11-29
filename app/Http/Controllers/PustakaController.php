@@ -64,35 +64,52 @@ class PustakaController extends Controller
     }
 
 
+    /*
+    |================================================
+    | Handle Open and Read Book
+    |================================================
+    |
+    */
     public function baca(Request $request, Book $book)
     {
         $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
-        
+
         if (!$read_sesi) {
             $read_sesi = ReadSession::create([
                 'user_id' => $request->user()->id,
                 'book_id' => $book->id,
-                'long_read' => Carbon::now(),
-                'last_page' => 1
+                'last_page' => 1,
+                'long_time' => 1,
+                'history' => '[]',
+                'on_reading' => 1,
+                'percent_completed' => 0,
             ]);
         }
-        
-        dd($read_sesi);
+
         return view('pustaka.book-reader-legacy', [
             'book' => $book,
             'user' => $request->user()
         ]);
     }
 
-    public function refreshSessionReading(Request $request, Book $book)
+    /*
+    |================================================
+    | Update Reading Activity
+    |================================================
+    |
+    */
+    public function refresh_session_reading(Request $request, Book $book)
     {
         $read_sesi = ReadSession::where('book_id', $book->id)->where('user_id', $request->user()->id)->first();
-        // if ($request->page != $read_sesi->last_page) {
+
         $read_sesi->update([
-            'last_page' => $request->num
+            'last_page' => max($read_sesi->last_page, $request->num_page),
+            'current_page' => $request->num_page
         ]);
-        // }
+        
+        return ['message' => 'OK'];
     }
+
 
     public function page(Book $book)
     {

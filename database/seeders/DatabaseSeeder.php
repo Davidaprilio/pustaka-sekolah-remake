@@ -19,7 +19,7 @@ class DatabaseSeeder extends Seeder
     {
         User::create([
             'name' => 'David Aprilio',
-            'email' => 'david@gmail.com',
+            'email' => 'david@mail.dev',
             'email_verified_at' => now(),
             // 'class' => 'TKJ 2',
             'password' => '$2y$10$92IXUNpkjO0rOQ5byMi.Ye4oKoEa3Ro9llC/.og/at2.uheWG/igi', // password
