@@ -1,9 +1,13 @@
-@extends('layouts.dashboard')
+@extends('layouts.adminlte.main', [
+    'pageName' => 'Rak Buku',
+    'breadcrumb' => 'Panel/Buku/Rak Buku'
+])
+@include('layouts.adminlte.resouces.datatable')
 
 @section('content')
 <div class="row">
     <div class="col-12 col-xl-7 mb-3">
-        <div class="card">
+        <div class="card card-primary card-outline">
             <div class="card-body">
                 <x-alert.flash name="cat_success" type="success" />
                 <x-form :action="route('etalase.item')" method="POST" id="form-kategori" style="display: none" class="pb-2 mb-3 border-bottom">
@@ -12,7 +16,7 @@
                         <x-form.input col="col-6" label="Nama" name="name_cat" />
                         <x-form.select col="col-6" label="Group" name="group_id" :options="$groups->pluck('name', 'id')" />
                         <div class="col"></div>
-                        <div class="col-6 mt-2 text-end">
+                        <div class="col-6 mt-2 text-right">
                             <button id="btn-close-form-kategori" type="button" class="btn btn-sm btn-secondary">cancel</button>
                             <button class="btn btn-sm btn-primary">save</button>
                         </div>
@@ -26,7 +30,7 @@
                                 <td style="min-width: 120px">Nama Kategori</td>
                                 <td style="min-width: 100px">Group</td>
                                 <td style="min-width: 120px">Jumlah Buku</td>
-                                <td class="text-end">
+                                <td class="text-right">
                                     <button class="btn btn-xs btn-primary rounded-0" id="btn-add-kategori">
                                         + Baru
                                     </button>
@@ -41,9 +45,9 @@
                                     <td>{{ $e->group->name ?? '-' }}</td>
                                     <td>{{ $e->books_count ?? 0 }} buku</td>
                                     <td>
-                                        <div class="btn-group float-end" data-id="{{ $e->id }}" data-name="{{ $e->name }}" data-gid="{{ $e->group->id }}">
+                                        <div class="btn-group float-right" data-id="{{ $e->id }}" data-name="{{ $e->name }}" data-gid="{{ $e->group->id }}">
                                             <button class="btn btn-sm btn-warning btn-edit">
-                                                <i class="fa fs-6 fa-pencil"></i>
+                                                <i class="fa fs-6 fa-pen"></i>
                                             </button>
                                             @if ($e->books_count > 0)
                                             @php
@@ -70,7 +74,7 @@
         </div>
     </div>
     <div class="col-12 col-xl-5 col-xxl-4">
-        <div class="card overflow-hidden px-1">
+        <div class="card card-primary card-outline overflow-hidden px-1">
             <div class="px-1 px-md-2 mb-2">
                 <div id="alert-groups">
                     <x-alert.flash name="success" type="success" />
@@ -95,7 +99,7 @@
                             <td>No</td>
                             <td style="min-width: 120px">Nama Group</td>
                             <td style="min-width: 120px">kategori</td>
-                            <td class="text-end">
+                            <td class="text-right">
                                 <button class="btn btn-xs btn-primary rounded-0" id="btn-add-groups">
                                     + Baru
                                 </button>
@@ -112,7 +116,7 @@
 </div>
 @endsection
 
-@section('js')
+@push('scripts')
     <script>
         const table = $('#table-kategori').DataTable({
             responsive: true,
@@ -269,4 +273,4 @@
 
         
     </script>
-@endsection
+@endpush

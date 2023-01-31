@@ -16,12 +16,13 @@
     <style>
         body {
             background: url('{{ url("/img/bg-pattern.png") }}') repeat, 
-                        linear-gradient(165deg, #a299aa 50%, #B7B7B7 50%);
+                        /* linear-gradient(165deg, #a299aa 50%, #B7B7B7 50%); */
+                        linear-gradient(165deg, #714700f2 50%, #55430E 50%);
         }
     </style>
 </head>
 <body>
-	<div class="card form-signin needs-validation shadow">
+	<div class="card form-signin needs-validation shadow" style="background-color: rgba(255, 255, 255, 0.81)">
 	    <x-form url="login" method="POST" class="my-3">
 	        <div class="text-center mb-4">
 	            <img src="{{ url('/img/logo/pustakaL.png') }}" width="150">

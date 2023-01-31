@@ -1,17 +1,20 @@
 @props([
     'name' => '',
-    'feather' => false,
-    'icon' => false
+    'icon' => 'fas fa-tachometer-alt',
+    'active' => false
 ])
-<li class="submenu">
-  <a href="#">
-    @if ($icon || $feather)
-    <i class="{{ $icon }}" @if ($feather) data-feather="{{ $feather }}" @endif></i> 
-    @endif
-    <span>{{ $name }}</span> 
-    <span class="menu-arrow"></span>
-  </a>
-  <ul>									
-    {{ $slot }}
-  </ul>
+<li class="nav-item menu-open">
+    <a href="#" @class([
+        'nav-link',
+        'active' => $active
+    ])>
+        <i class="nav-icon {{ $icon }}"></i>
+        <p>
+            {{ $name }}
+            <i class="right fas fa-angle-left"></i>
+        </p>
+    </a>
+    <ul class="nav nav-treeview">
+      {{ $slot }}
+    </ul>
 </li>

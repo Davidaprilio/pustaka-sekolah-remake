@@ -6,7 +6,7 @@
         <td>
             <div class="btn-group float-end" data-id="{{ $e->id }}" data-name="{{ $e->name }}">
                 <button class="btn btn-sm btn-warning btn-edit">
-                    <i class="fa fs-6 fa-pencil"></i>
+                    <i class="fa fs-6 fa-pen"></i>
                 </button>
                 @if ($e->etalase_count > 0)
                     @php

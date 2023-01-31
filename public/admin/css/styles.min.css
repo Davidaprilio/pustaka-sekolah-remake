@@ -398,7 +398,7 @@ a.nav-link {
 .dark .sb-sidenav .sb-sidenav-menu .nav-link.active .sb-nav-link-icon {
     color: #444 !important;
     font-weight: bold;
-    background: var(--bs-white);
+    background: var(--bs-light);
     border-radius: 25px 0 0 25px;
     position: relative;
 }
@@ -421,7 +421,7 @@ a.nav-link {
 }
 .default .sb-sidenav .sb-sidenav-menu .nav-link.active::after,
 .dark .sb-sidenav .sb-sidenav-menu .nav-link.active::after {
-    bottom: -25px;
+    bottom: -24px;
 }
 /* #layoutSidenav_content main::before {
     content: '';

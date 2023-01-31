@@ -2,16 +2,22 @@
     'active' => false,
     'name' => '',
     'link' => '#',
-    'icon' => false,
+    'badge' => null,
+    'badgeType' => 'primary',
+    'icon' => 'far fa-circle',
 ])
 
-<li @class(['active' => $active])>
-    <a class="nav-link" href="{{ $link }}">
-        @if ($icon || $feather)
-            <div class="sb-nav-link-icon">
-                <i class="{{ $icon }}"></i>
-            </div>
-        @endif
-        <span>{{ $name }}</span>
+<li class="nav-item">
+    <a href="{{ $link }}" @class([
+        'nav-link',
+        'active' => $active
+    ])>
+        <i class="nav-icon {{ $icon }}"></i>
+        <p>
+            {{ $slot->isEmpty() ? $name : $slot }}
+            @if ($badge)
+            <span class="right badge badge-{{ $badgeType }}">{{ $badge }}</span>
+            @endif
+        </p>
     </a>
 </li>

@@ -2,12 +2,17 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\ReadSession;
+use Carbon\Carbon;
 use Illuminate\Http\Request;
 
 class TestController extends Controller
 {
     public function index(Request $request)
     {
+        $time_exp = Carbon::now()->subMinutes(2);
+        $expired_session = ReadSession::where('on_reading', 1)->where('updated_at', '<', $time_exp)->get();
+        dd($time_exp, $expired_session);
 
         function cek1($arg1, $arg2)
         {

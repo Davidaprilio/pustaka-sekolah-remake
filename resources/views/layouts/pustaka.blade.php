@@ -106,11 +106,11 @@
             <div class="offcanvas-lg offcanvas-start" tabindex="-1" id="sideBar-menu" aria-labelledby="sideBarLabel"
                 style="width: 288px">
                 <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="sideBarLabel">Responsive offcanvas</h5>
+                    <h5 class="offcanvas-title" id="sideBarLabel">Pustaka</h5>
                     <button type="button" class="btn-close" data-bs-dismiss="offcanvas" data-bs-target="#sideBar-menu"
                         aria-label="Close"></button>
                 </div>
-                <div class="offcanvas-body">
+                <div class="offcanvas-body pt-lg-2 pt-0">
                     @include('layouts.pustaka-menu')
                 </div>
             </div>

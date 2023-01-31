@@ -1,18 +1,24 @@
-@extends('layouts.dashboard')
+@extends('layouts.adminlte.main', [
+    'pageName' => 'Daftar Buku',
+    'breadcrumb' => 'Panel/Buku/Daftar Buku',
+
+])
+
+@include('layouts.adminlte.resouces.datatable')
 
 @section('content')
     <div class="bg-white rounded p-2 w-100 mb-3">
-        <button data-bs-toggle="modal" data-bs-target="#moadlUpaloadBook" class="btn btn-primary btn-sm">Tambah</button>
+        <button data-toggle="modal" data-target="#moadlUpaloadBook" class="btn btn-primary btn-sm">Tambah</button>
     </div>
     <div class="card">
         <div class="card-body">
             <x-alert.flash name="success" type="success" />
-            <table class="table" id="table-books">
+            <table class="table w-100" id="table-books">
                 <thead>
                     <tr>
                         <td>No</td>
                         <td>Judul</td>
-                        <td>Action</td>
+                        <td class="text-right">Action</td>
                     </tr>
                 </thead>
                 <tbody></tbody>
@@ -59,7 +65,7 @@
     </div>
 @endsection
 
-@section('js')
+@push('scripts')
     <script src="//mozilla.github.io/pdf.js/build/pdf.js"></script>
     <script>
         $(document).ready(function() {
@@ -71,33 +77,34 @@
         $('#table-books').DataTable({
             serverSide: true,
             processing: true,
+            responsive: true,
             ajax: window.location.href,
             columns: [{
-                    data: 'DT_RowIndex',
-                    orderable: false,
+                    data: 'id',
                     render: function(data, type, row, meta) {
                         return meta.row + meta.settings._iDisplayStart + 1;
                     }
                 },
                 {
                     data: 'title',
-                    render: function(data, type, row, meta) {
-                        return `<div class="d-flex flex-column text-truncate" style="max-width: 400px">
+                    render: function(data, type, row) {
+                        return /*html*/`<div class="d-flex flex-column text-truncate" style="max-width: 400px">
 						<span>${data}</span>
 						<small class="text-muted">${row.slug}</small>
 					</div>`;
                     }
                 },
                 {
-                    data: 'action',
-                    render: function(data, type, row, meta) {
+                    orderable: false,
+                    className: 'text-right',
+                    render: function(data, type, row) {
                         const urlDelete = url('/books/' + row.slug)
-                        let formDelete = `<x-link href="actionUrl" classform="form-delete" class="btn btn-sm btn-danger" method="DELETE" :btn="true">Hapus</x-link>`
+                        let formDelete = /*html*/`<x-link href="actionUrl" classform="form-delete" class="btn btn-sm btn-danger" method="DELETE" :btn="true">Hapus</x-link>`
 
-                        return `
+                        return /*html*/`<div class="btn-group">
                             <a href="${url('/books/edit/' + row.slug)}" class="btn btn-sm btn-primary">Edit</a>
                             ${formDelete.replace('actionUrl', urlDelete)}
-                        `;
+                        </div>`;
                     }
                 }
             ]
@@ -215,6 +222,6 @@
 
 		})
     </script>
-@endsection
+@endpush
 
 {{-- g5122111602501 --}}

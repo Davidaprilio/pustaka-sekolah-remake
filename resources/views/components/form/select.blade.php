@@ -18,7 +18,7 @@ $value = old($name, $value ?? null) ?? $default;
         <label class="form-control-label" for="{{ $id }}">{{ $label }}</label>
     @endif
     <select
-        {{ $attributes->class(['form-select', 'is-invalid' => $validation && $errors->has($name)])->merge([
+        {{ $attributes->class(['form-control', 'is-invalid' => $validation && $errors->has($name)])->merge([
             'id' => $id,
             'name' => $name,
         ]) }}>

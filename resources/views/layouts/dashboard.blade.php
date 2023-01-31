@@ -126,14 +126,14 @@
             <span class="ms-auto order-4">
             </span>
 
-            <ul class="nav navbar-nav text-right d-flex order-5 ms-auto ms-md-0">
-                <li class="nav-item float-right justify-content-end align-items-center border-0" role="presentation">
+            <ul class="nav navbar-nav text-end d-flex order-5 ms-auto ms-md-0">
+                <li class="nav-item float-end justify-content-end align-items-center border-0" role="presentation">
                     <div class="nav-item dropdown no-arrow">
-                        <a class="dropdown-toggle active text-white" data-toggle="dropdown" aria-expanded="false" href="#">
+                        <a class="dropdown-toggle active text-white" data-bs-toggle="dropdown" href="javascript:void(0)">
                             <img class="rounded-circle" src="<?= url('/img/boy.jpg'); ?>">
                             <!-- $dataAdmin['fotoprofile'] -->
                         </a>
-                        <div class="dropdown-menu dropdown-menu-right shadow" role="menu" style="margin-top: 16px;padding-left: 13px;">
+                        <div class="dropdown-menu dropdown-menu-end shadow px-2" role="menu">
                             <span class="dropdown-item" id="settIddropdown">Pengaturan</span>
                             <div class="dropdown-divider"></div>
                             <x-link class="dropdown-item" role="presentation" :href="route('register')" method="POST">Keluar</x-link>
@@ -149,12 +149,7 @@
             <div id="sidenavAccordion" class="sb-sidenav accordion">
                 <div class="sb-sidenav-menu scrollBar">
                     <div class="nav mb-5">
-                        <div class="mt-4">
-                            <x-sidebar-menu :link="url('dashboard')" name="Dashboard" icon="fa fa-dashboard" />
-                            <x-sidebar-menu :link="url('tugas')" name="Penugasan" icon="fa fa-book" />
-                            <x-sidebar-menu :link="url('books')" name="Buku" icon="fa fa-book" />
-                            <x-sidebar-menu :link="route('etalase.index')" name="Ketegori" icon="fa fa-book" />
-                        </div>
+                        @include('layouts.dashboard-menu')
                     </div>
                 </div>
             </div>

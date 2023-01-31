@@ -1,4 +1,4 @@
-@extends('layouts.dashboard')
+@extends('layouts.adminlte.main')
 
 @section('content')
 <style>
@@ -38,10 +38,10 @@
 </div>
 @endsection
 
-@section('js')
+@push('scripts')
 <script>
     function uploadFile() {
         $('#file-book').click();
     }
 </script>
-@endsection
+@endpush

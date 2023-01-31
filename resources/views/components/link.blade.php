@@ -17,7 +17,7 @@ $disabled = $disabled ? 'disabled' : '';
 @if ($method === 'GET')
     <a href="{{ $href }}" {{ $attributes }} {{ $disabled }}>{{ $slot }}</a>
 @else
-    <form action="{{ $href }}" class="d-inline btn-group {{ $classform }}" method="POST"
+    <form action="{{ $href }}" class="btn-group {{ $classform }}" method="POST"
         id="{{ $id ? "form-{$id}" : '' }}">
         @csrf
         @if ($method !== 'POST')

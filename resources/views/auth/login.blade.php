@@ -35,7 +35,7 @@
                             <!--end::Label-->
                             <!--begin::Input-->
                             <input class="form-control form-control-lg form-control-solid" type="text" name="email"
-                                autocomplete="off" />
+                                autocomplete="off" required value="{{ old('email') }}" />
                             <!--end::Input-->
                         </div>
                         <!--end::Input group-->
@@ -47,7 +47,7 @@
                                     class="link-primary fs-6 fw-bolder">Forgot Password ?</a>
                             </div>
                             <input class="form-control form-control-lg form-control-solid" type="password" name="password"
-                                autocomplete="off" />
+                                autocomplete="off" required value="{{ old('password') }}" />
                         </div>
                         <div class="text-center">
                             <button type="submit" id="kt_sign_in_submit" class="btn btn-lg btn-primary w-100 mb-5">
