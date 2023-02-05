@@ -1,12 +1,19 @@
 @props([
     'name' => '',
     'icon' => 'fas fa-tachometer-alt',
-    'active' => false
 ])
-<li class="nav-item menu-open">
+
+@php
+    $isOpen = strpos($slot->toHtml(), 'class="nav-link active"') !== false
+@endphp
+
+<li @class([
+    'nav-item',
+    'menu-open' => $isOpen
+])>
     <a href="#" @class([
         'nav-link',
-        'active' => $active
+        'active' => $isOpen
     ])>
         <i class="nav-icon {{ $icon }}"></i>
         <p>

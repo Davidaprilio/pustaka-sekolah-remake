@@ -27,10 +27,15 @@ Route::get('/', function () {
 });
 
 Route::middleware(['auth:sanctum', 'verified'])->group(function () {
-    Route::view('/dashboard', 'dashboard');
+    Route::view('/dashboard', 'dashboard')->name('dashboard');
     Route::get('/activity', [ActivityController::class, 'index'])->name('activity.index');
 
     Route::prefix('panel')->group(function() {
+        /*
+        |================================================
+        | Manage Book by Admin
+        |================================================
+        */
         Route::prefix('books')->controller(BookController::class)->group(function () {
             Route::get('/', 'index')->name('books.index');
             Route::get('create', 'create')->name('books.create');
@@ -42,23 +47,6 @@ Route::middleware(['auth:sanctum', 'verified'])->group(function () {
             Route::post('edit/{book:slug}', 'update');
             Route::delete('{book:slug}', 'delete')->name('books.delete');
         });
-    });
-
-    /*
-    |================================================
-    | Manage Book by Admin
-    |================================================
-    */
-    Route::prefix('books')->name('books')->group(function () {
-        Route::get('/', [BookController::class, 'index']);
-        Route::get('create', [BookController::class, 'create'])->name('.create');
-        Route::post('create', [BookController::class, 'upload_book_pdf']);
-        Route::put('create', [BookController::class, 'store']);
-        Route::get('detail/{book}', [BookController::class, 'index'])->name('.detail');
-
-        Route::get('edit/{book:slug}', [BookController::class, 'edit'])->name('.edit');
-        Route::post('edit/{book:slug}', [BookController::class, 'update']);
-        Route::delete('{book:slug}', [BookController::class, 'delete'])->name('.delete');
     });
 
     Route::prefix('kategori')->name('etalase')->group(function () {

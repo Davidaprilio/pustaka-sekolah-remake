@@ -32,16 +32,14 @@
         </div>
 
         {{-- Sidebar Menu --}}
-        <nav class="mt-2">
-            <ul class="nav nav-pills nav-sidebar flex-column nav-child-indent" data-widget="treeview" role="menu"
-                data-accordion="false">
-                <x-sidebar-menu name="Activity" :link="route('activity.index')" icon="fa fa-activity"/>
-                <x-sidebar-menu-tree name="Books" icon="fas fa-book">
-                    <x-sidebar-menu name="Daftar Buku" :link="route('books.index')" icon="fa fa-list-alt"/>
-                    <x-sidebar-menu name="Rak Buku" :link="route('books.index')" icon="fa fa-th"/>
-                </x-sidebar-menu-tree>
-            </ul>
-        </nav>
+        <x-sidebar :active-menu="$activeRoute">
+            <x-sidebar-menu name="Dashboard" route="dashboard" icon="fa fa-dashboard"/>
+            <x-sidebar-menu name="Activity" route="activity.index" icon="fa fa-activity"/>
+            <x-sidebar-menu-tree name="Books" icon="fas fa-book">
+                <x-sidebar-menu name="Daftar Buku" route="books.index" icon="fa fa-list-alt"/>
+                <x-sidebar-menu name="Rak Buku" route="etalase.index" icon="fa fa-th"/>
+            </x-sidebar-menu-tree>
+        </x-sidebar>
         {{-- /.sidebar-menu --}}
     </div>
     {{-- /.sidebar --}}

@@ -1,4 +1,7 @@
-@extends('layouts.dashboard')
+@extends('layouts.adminlte.main', [
+    'pageName' => 'Dashboard',
+    'breadcrumb' => 'Panel/Dashboard',
+])
 
 @section('content')
     <div class="row">

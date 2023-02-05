@@ -1,3 +1,17 @@
+{{-- 
+    Config Layout AdminLTE
+    title       : megatur judul pada tab halaman
+    titlePage   : menambahkan nama halaman pada judul tab halaman 
+    activeRoute : overwrite nama route yang aktif pada halaman
+    pageName    : memberikan nama halaman pada header content
+    breadcrumb  : membuatkan breadcrumb pada header content dengan format strign/array
+                    string = 'Panel/Path/To/Page'
+                    array = [
+                        'Panel',
+                        'Path' => null,
+                        'To' => url('url/to/page')
+                    ]
+ --}}
 <!DOCTYPE html>
 <html lang="en">
 
@@ -123,7 +137,9 @@
         @include('layouts.adminlte.navbar')
 
         {{-- left Sidebar --}}
-        @include('layouts.adminlte.sidebar')
+        @include('layouts.adminlte.sidebar', [
+            'activeRoute' => $activeRoute ?? false
+        ])
 
         {{-- Content Wrapper. Contains page content --}}
         <div class="content-wrapper">
