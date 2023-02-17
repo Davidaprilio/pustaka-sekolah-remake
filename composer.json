@@ -20,7 +20,6 @@
         "laravel/tinker": "^2.5",
         "livewire/livewire": "^2.5",
         "setasign/fpdi-fpdf": "^2.3",
-        "spatie/pdf-to-image": "^2.2",
         "staudenmeir/eloquent-json-relations": "^1.1",
         "yajra/laravel-datatables-oracle": "^9.0"
     },

@@ -3,6 +3,7 @@
 namespace App\Providers;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
+use Illuminate\Support\Facades\App;
 use Illuminate\Support\Facades\Gate;
 
 class AuthServiceProvider extends ServiceProvider
@@ -25,11 +26,14 @@ class AuthServiceProvider extends ServiceProvider
     {
         $this->registerPolicies();
 
-        $roles = \App\Models\Role::all();
-        foreach ($roles as $role) {
-            Gate::define($role->name, function ($user) use ($role) {
-                return $user->hasRole($role->name);
-            });
+        // jika running di console, maka tidak perlu dijalankan
+        if (!App::runningInConsole()) {
+            $roles = \App\Models\Role::all();
+            foreach ($roles as $role) {
+                Gate::define($role->name, function ($user) use ($role) {
+                    return $user->hasRole($role->name);
+                });
+            }
         }
     }
 }
