@@ -88,9 +88,32 @@
                         </div>
                     </div>
 
+                    @auth
+                    <div class="col-2 col-md-4 text-end d-flex align-items-center justify-content-end pe-0">
+                        <div class="dropdown">
+                            <div class="" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                {{ Auth::user()->name }}
+                                <img src="https://via.placeholder.com/500" class="rounded-circle border-0" alt="">
+                            </div>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                <li>
+                                    <a class="dropdown-item" href="{{ route('logout') }}" onclick="event.preventDefault();
+                                                     document.getElementById('logout-form').submit();">
+                                        {{ __('Logout') }}
+                                    </a>
+                                    <form id="logout-form" action="{{ route('logout') }}" method="POST"
+                                        class="d-none">
+                                        @csrf
+                                    </form>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                    @else
                     <div class="col-2 col-md-4 text-end d-flex align-items-center justify-content-end pe-0">
                         <a href="{{ route('login') }}" class="btn btn-warning btn-sm">Login</a>
                     </div>
+                    @endauth
                 </div>
             </div>
             <div class="progress" id="loading-bar" style="height: 3px; display: none">
